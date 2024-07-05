@@ -13,6 +13,13 @@ export async function POST(request, { params }) {
     return NextResponse.json({ success: false, message: "Nu ești logat" });
   }
 
+  if (!session.user.name) {
+    return NextResponse.json({
+      success: false,
+      message: "Numele este obligatoriu",
+    });
+  }
+
   const ParticipantType = Participants[`Participanti_live_${type}`];
   const VerificationsType = Verifications[`Verificari_live_${type}`];
 
