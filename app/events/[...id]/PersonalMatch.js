@@ -49,7 +49,9 @@ export default function PersonalMatch({
       const data = await fetch(
         `/api/events/personalMatch/${type}/${round}/${userID}`
       );
-      setParticipants(await data.json());
+      const result = await data.json();
+
+      setParticipants(result);
     };
 
     getPersonalMatch();

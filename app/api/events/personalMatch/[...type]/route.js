@@ -21,6 +21,8 @@ const bucket = storage.bucket(bucketName);
 export async function GET(request, { params }) {
   const [type, round, userID] = params.type;
 
+  if (round === "undefined") return NextResponse.json({});
+
   const MatchesType = Matches[`Meciuri_live_${type}_${round}`];
 
   await dbConnect();

@@ -11,6 +11,8 @@ import { getMatches } from "@/utils/getMatches";
 export async function GET(request, { params }) {
   const [type, round] = params.type;
 
+  if (round === "undefined") return NextResponse.json({});
+
   const VerificationsType = Verifications[`Verificari_live_${type}`];
 
   const matches = await getMatches(type, round);
@@ -30,7 +32,7 @@ export async function GET(request, { params }) {
 
   await dbConnect();
   const verification = await VerificationsType.findOne().select("timer");
-  const timer = verification.timer;
+  const timer = verification?.timer;
 
   return NextResponse.json({ allMatches, timer });
 }
