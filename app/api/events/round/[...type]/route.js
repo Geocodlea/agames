@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import * as Participants from "@/models/Participants";
 import * as Verifications from "@/models/Verifications";
 import * as Matches from "@/models/Matches";
+import Event from "/models/Event";
 
 import nodemailer from "nodemailer";
 import { emailFooter } from "@/utils/emailFooter";
@@ -10,11 +11,17 @@ import { emailFooter } from "@/utils/emailFooter";
 import { createMatches } from "@/utils/createMatches";
 
 export async function GET(request, { params }) {
-  const [type] = params.type;
-
-  const VerificationsType = Verifications[`Verificari_live_${type}`];
+  const [type, eventID] = params.type;
 
   await dbConnect();
+  const event = await Event.findOne({ _id: eventID });
+
+  // If event not exists, redirect to homepage
+  if (!event) {
+    return NextResponse.json({ noEvent: true });
+  }
+
+  const VerificationsType = Verifications[`Verificari_live_${type}`];
   const verification = await VerificationsType.findOne({
     round: { $exists: true },
   }).select("round");
