@@ -2,11 +2,12 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import EditableDataGrid from "@/components/EditableDataGrid";
 import CountdownTimer from "@/components/CountdownTimer";
-import { Box, Typography, Stack } from "@mui/material";
+import { Box, Stack, Skeleton } from "@mui/material";
 
 export default function Matches({ type, round, host, isAdmin }) {
   const [matches, setMatches] = useState([]);
   const [timer, setTimer] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getMatches = async () => {
@@ -14,6 +15,7 @@ export default function Matches({ type, round, host, isAdmin }) {
       const result = await data.json();
       setMatches(result.allMatches);
       setTimer(result.timer);
+      setLoading(false);
     };
 
     getMatches();
@@ -22,6 +24,16 @@ export default function Matches({ type, round, host, isAdmin }) {
 
     return () => clearInterval(intervalId);
   }, [round]);
+
+  if (loading) {
+    return (
+      <Stack spacing={6} sx={{ margin: "auto", maxWidth: "800px" }}>
+        <Skeleton variant="rounded" width="60%" height={50} />
+        <Skeleton variant="rounded" width="100%" height={250} />
+        <Skeleton variant="rounded" width="100%" height={250} />
+      </Stack>
+    );
+  }
 
   const columnsData = [
     {
