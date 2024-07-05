@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import EditableDataGrid from "@/components/EditableDataGrid";
-import { Typography } from "@mui/material";
 
 const columnGroupingModel = [
   {
@@ -152,10 +151,20 @@ export default function Ranking({ type, round }) {
     {
       field: "procent",
       headerName: "Procent",
+      width: 70,
       headerClassName: "table-highlight",
       cellClassName: "table-highlight",
     },
   ];
+
+  // Only for Whist
+  if (type === "whist") {
+    columnsData.push({
+      field: "licitari",
+      headerName: "Licitari",
+      width: 70,
+    });
+  }
 
   return (
     <>

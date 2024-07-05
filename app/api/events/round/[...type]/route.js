@@ -68,7 +68,7 @@ export async function GET(request, { params }) {
   let participantsNumber = await ParticipantType.countDocuments();
 
   if (type === "whist") {
-    participantsNumber = 6;
+    participantsNumber = 12;
   }
   const playersPerTable = "6";
 
@@ -94,13 +94,32 @@ export async function GET(request, { params }) {
         punctetotal: "$participants.punctetotal",
         scorjocuri: "$participants.scorjocuri",
         procent: "$participants.procent",
+        licitari: "$participants.licitari",
+      },
+    },
+    {
+      $addFields: {
+        sort1: {
+          $cond: {
+            if: { $eq: [type, "whist"] }, // Check if type is 'whist'
+            then: "$procent", // Use 'procent' for 'whist'
+            else: "$scorjocuri", // Use 'scorjocuri' otherwise
+          },
+        },
+        sort2: {
+          $cond: {
+            if: { $eq: [type, "whist"] }, // Check if type is 'whist'
+            then: "$licitari", // Use 'licitari' for 'whist'
+            else: "$procent", // Use 'procent' otherwise
+          },
+        },
       },
     },
     {
       $sort: {
-        punctetotal: -1,
-        scorjocuri: -1,
-        procent: -1,
+        punctetotal: -1, // Always sort by 'punctetotal' first
+        sort1: -1, // Conditionally sort by either 'procent' or 'scorjocuri'
+        sort2: -1, // Conditionally sort by either 'licitari' or 'procent'
       },
     },
   ]);

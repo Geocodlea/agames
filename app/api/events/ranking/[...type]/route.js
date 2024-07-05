@@ -10,7 +10,7 @@ export async function GET(request, { params }) {
   const ClasamentType = Clasament[`Clasament_live_${type}`];
 
   await dbConnect();
-  const clasament = await ClasamentType.find().sort(sortOrder(type, round));
+  const clasament = await ClasamentType.aggregate(sortOrder(type, round));
 
   return NextResponse.json(clasament);
 }

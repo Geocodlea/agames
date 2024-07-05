@@ -61,7 +61,7 @@ const StartButtons = ({ type, loading, round, start, timer }) => {
             Start
           </LoadingButton>
         </Box>
-        <Box>
+        {/* <Box>
           <Typography gutterBottom>Generare meciuri 5 juc.</Typography>
           <LoadingButton
             loading={loading}
@@ -84,7 +84,7 @@ const StartButtons = ({ type, loading, round, start, timer }) => {
           >
             Start
           </LoadingButton>
-        </Box>
+        </Box> */}
       </Stack>
     );
   }

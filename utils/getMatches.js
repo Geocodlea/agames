@@ -15,6 +15,7 @@ export const getMatches = async (type, round) => {
             table: "$table",
             name: "$name",
             score: "$score",
+            licitari: "$licitari",
             host: "$host",
             img: "$img",
           },

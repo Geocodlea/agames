@@ -68,8 +68,8 @@ export default function Matches({ type, round, host, isAdmin }) {
     },
   ];
 
-  // Only for Whist Final
-  if (type === "whist" && round === 2) {
+  // Only for Whist
+  if (type === "whist") {
     columnsData.push({
       field: "licitari",
       headerName: "Licitari Corecte",

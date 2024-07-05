@@ -61,7 +61,7 @@ export async function DELETE(request, { params }) {
       });
     }
 
-    const participants = await ClasamentType.find().sort(sortOrder(type));
+    const participants = await ClasamentType.aggregate(sortOrder(type));
 
     // Update Leaderboard
     const leaderboardPoints = [100, 70, 50, 35, 25];

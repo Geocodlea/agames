@@ -58,8 +58,12 @@ const OldEventTable = async ({ params }) => {
         "data.punctetotalNumber": { $toDouble: "$data.punctetotal" },
         "data.punctejocuriNumber": { $toDouble: "$data.punctejocuri" },
         "data.procentNumber": { $toDouble: "$data.procent" },
+        "data.masar2Number": { $toDouble: "$data.masar2" },
         "data.puncter2Number": { $toDouble: "$data.puncter2" },
         "data.licitariNumber": { $toDouble: "$data.licitari" },
+        masar2IsNull: {
+          $cond: { if: { $not: ["$data.masar2"] }, then: 1, else: 0 },
+        },
       },
     },
     {
@@ -68,6 +72,8 @@ const OldEventTable = async ({ params }) => {
           { $match: { name: /whist/i } },
           {
             $sort: {
+              masar2IsNull: 1,
+              "data.masar2Number": 1,
               "data.puncter2Number": -1,
               "data.licitariNumber": -1,
             },

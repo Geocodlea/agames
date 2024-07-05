@@ -81,7 +81,7 @@ export async function PUT(request, { params }) {
     });
   }
 
-  // Only for Whist Final
+  // Only for Whist
   const licitari = data.licitari;
 
   const score = Number(data.score);
@@ -125,7 +125,7 @@ export async function PUT(request, { params }) {
   const scores = players.map((player) => player.score);
   const totalScore = scores.reduce((a, b) => a + b, 0);
 
-  // Only for Whist Final
+  // Only for Whist
   const licitariAll = players.map((player) => player.licitari);
 
   const points = calculateScores(type, scores);

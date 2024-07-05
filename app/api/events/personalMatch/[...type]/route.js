@@ -35,7 +35,7 @@ export async function GET(request, { params }) {
 
   // Find all entries with the same "table" value
   const personalMatch = await MatchesType.find({ table: user.table }).select(
-    "id table name score"
+    "id table name score licitari"
   );
 
   return NextResponse.json(personalMatch);
