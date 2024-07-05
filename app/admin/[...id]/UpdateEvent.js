@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import revalidate from "/utils/revalidate";
 
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
@@ -65,6 +66,7 @@ const UpdateEvent = ({ params }) => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       setAlert({ text: "Event updated successfully", severity: "success" });
+      revalidate();
     } catch (error) {
       // Handle any errors that occurred during the fetch operation
       setAlert({ text: "Error updating event", severity: "error" });
