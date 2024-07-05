@@ -67,10 +67,12 @@ export async function POST(request, { params }) {
 }
 
 export async function PUT(request, { params }) {
-  const [type, round, host, isAdmin, id] = params.type;
+  const [type, round, host, isAdmin, targetRound, id] = params.type;
   const data = await request.json();
   const table = data.table;
   const name = data.name;
+
+  const matchRound = isNaN(targetRound) ? round : targetRound;
 
   if (typeof data.score !== "number") {
     return NextResponse.json({
@@ -84,7 +86,7 @@ export async function PUT(request, { params }) {
 
   const score = Number(data.score);
   const ParticipantType = Participants[`Participanti_live_${type}`];
-  const MatchesType = Matches[`Meciuri_live_${type}_${round}`];
+  const MatchesType = Matches[`Meciuri_live_${type}_${matchRound}`];
   const VerificationsType = Verifications[`Verificari_live_${type}`];
   const ClasamentType = Clasament[`Clasament_live_${type}`];
 
@@ -134,7 +136,7 @@ export async function PUT(request, { params }) {
     await VerificationsType.updateMany({ id: { $in: ids } }, [
       {
         $set: {
-          [`meci${round}`]: table,
+          [`meci${matchRound}`]: table,
           masa_redusa: reducedTable,
         },
       },
@@ -147,14 +149,14 @@ export async function PUT(request, { params }) {
         name: {
           $arrayElemAt: [names, { $indexOfArray: [ids, "$id"] }],
         },
-        [`masar${round}`]: table,
-        [`puncter${round}`]: {
+        [`masar${matchRound}`]: table,
+        [`puncter${matchRound}`]: {
           $arrayElemAt: [points, { $indexOfArray: [ids, "$id"] }],
         },
-        [`scorjocr${round}`]: {
+        [`scorjocr${matchRound}`]: {
           $arrayElemAt: [scores, { $indexOfArray: [ids, "$id"] }],
         },
-        [`scortotalr${round}`]: totalScore,
+        [`scortotalr${matchRound}`]: totalScore,
       },
     },
   ]);
@@ -277,10 +279,12 @@ export async function PUT(request, { params }) {
 }
 
 export async function DELETE(request, { params }) {
-  const [type, round, , , id] = params.type;
+  const [type, round, , , targetRound, id] = params.type;
+
+  const matchRound = isNaN(targetRound) ? round : targetRound;
 
   const ParticipantType = Participants[`Participanti_live_${type}`];
-  const MatchesType = Matches[`Meciuri_live_${type}_${round}`];
+  const MatchesType = Matches[`Meciuri_live_${type}_${matchRound}`];
 
   await dbConnect();
   await ParticipantType.deleteOne({ id });

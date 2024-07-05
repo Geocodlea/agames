@@ -93,13 +93,15 @@ export default function Matches({ type, round, host, isAdmin }) {
           >
             <h3>Meciuri - Runda {round - index}</h3>
             <Stack spacing={6}>
-              {match.map((match, index) => (
-                <Box key={index}>
+              {match.map((match, i) => (
+                <Box key={i}>
                   <EditableDataGrid
                     columnsData={columnsData}
                     rowsData={match.participants}
                     pageSize={10}
-                    apiURL={`/events/matches/${type}/${round}/${host}/${isAdmin}`}
+                    apiURL={`/events/matches/${type}/${round}/${host}/${isAdmin}/${
+                      round - index
+                    }`}
                     alertText={"player"}
                     showAddRecord={isAdmin}
                     showActions={isAdmin}
