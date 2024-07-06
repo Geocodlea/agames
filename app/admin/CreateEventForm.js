@@ -63,13 +63,17 @@ const CreateEventForm = () => {
       });
 
       if (!response.ok) {
-        // Check for non-successful HTTP status codes
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
+
+      const data = await response.json();
+      if (data.success === false) {
+        throw new Error(data.message);
+      }
+
       setAlert({ text: "Event created successfully", severity: "success" });
     } catch (error) {
-      // Handle any errors that occurred during the fetch operation
-      setAlert({ text: "Error creating event", severity: "error" });
+      setAlert({ text: `${error}`, severity: "error" });
     }
   };
 

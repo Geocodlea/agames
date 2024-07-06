@@ -48,6 +48,15 @@ export async function PATCH(request, { params }) {
 
   await dbConnect();
 
+  // Check if the event type already exists
+  const events = await Event.find({ type: data.type });
+  if (events.length) {
+    return NextResponse.json({
+      success: false,
+      message: `Este deja un eveniment de ${data.type}`,
+    });
+  }
+
   if (data.image) {
     const bytes = await data.image.arrayBuffer();
     const buffer = Buffer.from(bytes);

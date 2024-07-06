@@ -28,6 +28,16 @@ export async function POST(request) {
 
   // Create a new event and obtain its ID
   await dbConnect();
+
+  // Check if the event type already exists
+  const events = await Event.find({ type: data.type });
+  if (events.length) {
+    return NextResponse.json({
+      success: false,
+      message: `Este deja un eveniment de ${data.type}`,
+    });
+  }
+
   const event = new Event(data);
 
   const bytes = await data.image.arrayBuffer();
