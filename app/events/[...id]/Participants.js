@@ -34,10 +34,16 @@ export default function Participanti({ type, round, isAdmin }) {
       flex: 1,
     },
     {
+      field: "tel",
+      headerName: "Telefon",
+      editable: isAdmin,
+      width: 100,
+    },
+    {
       field: "email",
       headerName: "Email",
       editable: isAdmin,
-      width: 150,
+      width: 200,
     },
     {
       field: "obs",
