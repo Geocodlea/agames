@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import revalidate from "/utils/revalidate";
 import Link from "next/link";
 
 import { useState, useEffect } from "react";
@@ -17,6 +16,7 @@ const Events = () => {
   const [events, setEvents] = useState([]);
   const [alert, setAlert] = useState({ text: "", severity: "" });
   const [loading, setLoading] = useState(true);
+  const [deletedEvent, setDeletedEvent] = useState(false);
   const { data: session } = useSession();
   const isAdmin = session?.user.role === "admin";
 
@@ -29,7 +29,7 @@ const Events = () => {
     };
 
     getEvents();
-  }, []);
+  }, [deletedEvent]);
 
   const handleDelete = async (id) => {
     try {
@@ -49,7 +49,7 @@ const Events = () => {
         throw new Error(data.message);
       }
 
-      revalidate();
+      setDeletedEvent(!deletedEvent);
       setAlert({
         text: `Event șters cu succes`,
         severity: "success",
