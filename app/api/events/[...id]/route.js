@@ -93,3 +93,23 @@ export async function PATCH(request, { params }) {
 
   return NextResponse.json({ success: true });
 }
+
+export async function DELETE(request, { params }) {
+  const [id] = params.id;
+
+  // List all files for deleted event
+  const [files] = await bucket.getFiles({
+    prefix: `uploads/events/${id}/`,
+  });
+
+  // Delete each file
+  await Promise.all(
+    files.map(async (file) => {
+      await file.delete();
+    })
+  );
+
+  await Event.deleteOne({ _id: id });
+
+  return NextResponse.json({ success: true });
+}

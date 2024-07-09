@@ -1,67 +1,95 @@
-import { authOptions } from "/app/api/auth/[...nextauth]/route";
-import { getServerSession } from "next-auth/next";
+"use client";
+
 import Image from "next/image";
-import { revalidatePath } from "next/cache";
+import revalidate from "/utils/revalidate";
 import Link from "next/link";
 
-import styles from "/app/page.module.css";
-import { Box, Paper, Typography, Button } from "@mui/material";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 
-import dbConnect from "/utils/dbConnect";
-import Event from "/models/Event";
+import styles from "/app/page.module.css";
+import { Box, Paper, Typography, Button, Skeleton } from "@mui/material";
+
 import DeleteEvent from "./admin/DeleteEvent";
 import AlertMsg from "@/components/AlertMsg";
 
-import { redirect } from "next/navigation";
-
-import { Storage } from "@google-cloud/storage";
-
-// Set up Google Cloud Storage client
-const storage = new Storage({
-  projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
-  credentials: {
-    client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
-    private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY.replace(/\\n/g, "\n"),
-  },
-});
-
-// Google Cloud Storage bucket name
-const bucketName = process.env.GOOGLE_CLOUD_BUCKET_NAME;
-const bucket = storage.bucket(bucketName);
-
-const Events = async ({ searchParams }) => {
-  const session = await getServerSession(authOptions);
+const Events = () => {
+  const [events, setEvents] = useState([]);
+  const [alert, setAlert] = useState({ text: "", severity: "" });
+  const [loading, setLoading] = useState(true);
+  const { data: session } = useSession();
   const isAdmin = session?.user.role === "admin";
 
-  const alert = { text: searchParams.text, severity: searchParams.severity };
+  useEffect(() => {
+    const getEvents = async () => {
+      const response = await fetch("/api/events");
+      const data = await response.json();
+      setEvents(data);
+      setLoading(false);
+    };
 
-  await dbConnect();
-  const events = await Event.find();
+    getEvents();
+  }, []);
 
   const handleDelete = async (id) => {
-    "use server";
-
     try {
-      // List all files for deleted event
-      const [files] = await bucket.getFiles({
-        prefix: `uploads/events/${id}/`,
+      const response = await fetch(`/api/events/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
 
-      // Delete each file
-      await Promise.all(
-        files.map(async (file) => {
-          await file.delete();
-        })
-      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
 
-      await Event.deleteOne({ _id: id });
+      const data = await response.json();
+      if (data.success === false) {
+        throw new Error(data.message);
+      }
+
+      revalidate();
+      setAlert({
+        text: `Event șters cu succes`,
+        severity: "success",
+      });
     } catch (error) {
-      redirect(`/?text=Error deleting event&severity=error`);
+      setAlert({ text: `${error}`, severity: "error" });
     }
-
-    revalidatePath("/");
-    redirect(`/?text=Event deleted successfully&severity=success`);
   };
+
+  if (loading) {
+    return (
+      <Box className={styles.grid}>
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Paper elevation={24} key={i}>
+            <Skeleton variant="rounded" animation="wave" height={300} />
+            <Skeleton
+              variant="rectangular"
+              height={120}
+              sx={{ bgcolor: "grey.200" }}
+            />
+            <Skeleton
+              variant="rounded"
+              animation="wave"
+              height={45}
+              width={96}
+              sx={{ margin: "auto" }}
+            />
+            <Skeleton
+              variant="text"
+              sx={{ fontSize: "2rem", margin: "10px 20%" }}
+            />
+            <Skeleton
+              variant="text"
+              sx={{ fontSize: "2rem", marginLeft: "30%", marginRight: "30%" }}
+            />
+          </Paper>
+        ))}
+      </Box>
+    );
+  }
 
   return (
     <>
@@ -70,7 +98,7 @@ const Events = async ({ searchParams }) => {
           <Paper
             elevation={24}
             className={styles.card}
-            key={event.id}
+            key={event._id}
             style={{
               padding: 0,
             }}
@@ -107,14 +135,14 @@ const Events = async ({ searchParams }) => {
               <p>{event.description}</p>
             </Box>
             <Box>
-              <Link href={`/events/${event.type}/${event.id}`}>
+              <Link href={`/events/${event.type}/${event._id}`}>
                 <Button variant="contained" className="btn btn-primary">
                   Detalii
                 </Button>
               </Link>
             </Box>
             <Typography className={styles.code}>
-              {event.date.toLocaleString("ro-RO", {
+              {new Date(event.date).toLocaleString("ro-RO", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
@@ -132,13 +160,13 @@ const Events = async ({ searchParams }) => {
                   padding: "1rem",
                 }}
               >
-                <Link href={`/admin/${event.id}`}>
+                <Link href={`/admin/${event._id}`}>
                   <Button variant="contained" className="btn btn-primary">
                     Edit Event
                   </Button>
                 </Link>
 
-                <DeleteEvent handleDelete={handleDelete} id={event.id} />
+                <DeleteEvent handleDelete={handleDelete} id={event._id} />
               </Box>
             )}
           </Paper>
