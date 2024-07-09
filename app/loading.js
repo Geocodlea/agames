@@ -1,11 +1,9 @@
-import styles from "./page.module.css";
-
 import { Skeleton } from "@mui/material";
 
 export default function Loading() {
   return (
     <>
-      <Skeleton width="80%" className={styles.title} />
+      <Skeleton width="70%" height={80} sx={{ margin: "1rem auto" }} />
       <Skeleton
         variant="rounded"
         width="100%"
