@@ -4,7 +4,7 @@ import Events from "./Events";
 import Leaderboard from "./Leaderboard";
 import OldEvents from "./OldEvents";
 
-const Home = ({ searchParams }) => {
+const Home = () => {
   return (
     <>
       <h1 className={styles.title}>EVENIMENTE</h1>
@@ -12,7 +12,7 @@ const Home = ({ searchParams }) => {
         TE AȘTEPTĂM LA CONCURSURI, JOCURI AMICALE SAU SESIUNI DE LEARN & PLAY,
         LIVE ȘI ONLINE, LA CELE MAI POPULARE BOARD GAMES.
       </p>
-      <Events searchParams={searchParams} />
+      <Events />
       <Leaderboard />
       <OldEvents />
     </>
