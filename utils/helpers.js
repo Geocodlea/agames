@@ -1,8 +1,6 @@
-export const sortOrder = (type, round) => {
+export const sortOrder = (type, isFinished) => {
   if (type === "whist") {
-    if (round === "1") {
-      return [{ $sort: { punctetotal: -1, procent: -1, licitari: -1 } }];
-    } else {
+    if (isFinished) {
       return [
         {
           $addFields: {
@@ -22,6 +20,8 @@ export const sortOrder = (type, round) => {
         { $project: { masar2IsNull: 0 } }, // Optionally remove the custom field
       ];
     }
+
+    return [{ $sort: { punctetotal: -1, procent: -1, licitari: -1 } }];
   }
 
   return [{ $sort: { punctetotal: -1, scorjocuri: -1, procent: -1 } }];

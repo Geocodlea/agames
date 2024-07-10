@@ -168,7 +168,7 @@ export default function EventPage({ params }) {
           />
         ),
       },
-      { label: "Clasament", content: <Ranking type={type} round={round} /> }
+      { label: "Clasament", content: <Ranking type={type} /> }
     );
   }
 

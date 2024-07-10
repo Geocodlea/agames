@@ -61,7 +61,12 @@ export async function DELETE(request, { params }) {
       });
     }
 
-    const participants = await ClasamentType.aggregate(sortOrder(type));
+    // For Whist Ranking
+    const isFinished = true;
+
+    const participants = await ClasamentType.aggregate(
+      sortOrder(type, isFinished)
+    );
 
     // Update Leaderboard
     const leaderboardPoints = [100, 70, 50, 35, 25];
