@@ -1,25 +1,35 @@
 "use client";
 
 import { Box } from "@mui/material";
-
+import { useEffect, useState } from "react";
 import { useSelectedLayoutSegments } from "next/navigation";
 import Image from "next/image";
 import bg from "/public/img/bg.jpg";
-import catanBg from "/public/img/catan_bg.webp";
-import cavaleriBg from "/public/img/cavaleri_bg.webp";
-import rentzBg from "/public/img/rentz_bg.webp";
+import catanBg from "/public/img/catan_bg.jpg";
+import cavaleriBg from "/public/img/cavaleri_bg.jpg";
+import whistBg from "/public/img/whist_bg.jpg";
+import rentzBg from "/public/img/rentz_bg.jpg";
 import aboutBg from "/public/img/about_bg.jpg";
 import contactBg from "/public/img/contact_bg.jpg";
 import profileBg from "/public/img/profile_bg.jpg";
 
 function Banner({ children }) {
   const segments = useSelectedLayoutSegments();
-  let imageUrl;
-
   const [segment, secondSegment] = segments;
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  let imageUrl;
+  const imageUrls = [catanBg, whistBg, cavaleriBg, rentzBg, profileBg];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
+    }, 5000); // Change image every 5 seconds
+
+    return () => clearInterval(interval); // Clean up interval on unmount
+  }, []);
 
   if (segments.length === 0) {
-    imageUrl = catanBg;
+    imageUrl = imageUrls[currentImageIndex];
   } else if (segments.length === 1) {
     switch (segment) {
       case "about":
@@ -44,6 +54,8 @@ function Banner({ children }) {
         imageUrl = cavaleriBg;
         break;
       case "whist":
+        imageUrl = whistBg;
+        break;
       case "rentz":
         imageUrl = rentzBg;
         break;
@@ -69,7 +81,7 @@ function Banner({ children }) {
           src={imageUrl}
           placeholder="blur"
           fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          sizes="100vw"
           style={{
             zIndex: -2,
             objectFit: "cover",
