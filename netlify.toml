@@ -1,12 +1,7 @@
-[build]
-  command = "npm run build"
-  publish = ".next"
-
 [[headers]]
    for = "/*"
    [headers.values]
       Access-Control-Allow-Origin = "*"
 
-[[plugins]]
-  package = "@netlify/scheduled-job"
-  config.schedule = "* * * * *"  # This cron expression runs every minute
+[functions."test"]
+schedule = "* * * * *"

@@ -18,6 +18,7 @@
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.15.21",
     "@mui/x-data-grid": "^7.8.0",
+    "@netlify/functions": "^2.8.1",
     "add-to-calendar-button-react": "^2.6.18",
     "bson-objectid": "^2.0.4",
     "ckeditor5": "^42.0.0",
