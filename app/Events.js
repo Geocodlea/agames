@@ -12,6 +12,8 @@ import { Box, Paper, Typography, Button, Skeleton } from "@mui/material";
 import DeleteEvent from "./admin/DeleteEvent";
 import AlertMsg from "@/components/AlertMsg";
 
+import { getEventDates } from "@/utils/helpers";
+
 const Events = () => {
   const [events, setEvents] = useState([]);
   const [alert, setAlert] = useState({ text: "", severity: "" });
@@ -142,11 +144,7 @@ const Events = () => {
               </Link>
             </Box>
             <Typography className={styles.code}>
-              {new Date(event.date).toLocaleString("ro-RO", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
+              {getEventDates(event.type, event.date)}
             </Typography>
             <Typography variant="overline" gutterBottom>
               {event.type === "cavaleri"
