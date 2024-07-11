@@ -92,9 +92,9 @@ const Providers = ({ providers }) => {
               onClick={() => signIn(provider.id)}
             >
               {provider.id === "google" && <GoogleIcon fontSize="small" />}
-              {provider.id === "github" && <GitHubIcon fontSize="small" />}
+              {/* {provider.id === "github" && <GitHubIcon fontSize="small" />}
               {provider.id === "discord" && <SmartToyIcon fontSize="small" />}
-              {provider.id === "twitter" && <TwitterIcon fontSize="small" />}
+              {provider.id === "twitter" && <TwitterIcon fontSize="small" />} */}
               Sign in with {provider.name}
             </Button>
           )}
