@@ -1,5 +1,11 @@
-export default async (req) => {
-  const { next_run } = await req.json();
+import dbConnect from "/utils/dbConnect";
+import User from "/models/User";
 
-  console.log("Received event! Next invocation at:", next_run);
+export default async (req) => {
+  console.log(req);
+
+  await dbConnect();
+  const users = await User.find();
+
+  console.log(users);
 };
