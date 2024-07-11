@@ -83,7 +83,8 @@ const getEventDates = (type, date) => {
   const dbDate = new Date(date);
   const today = new Date();
   today.setUTCHours(0, 0, 0, 0);
-  console.log(dbDate);
+
+  // If the date is in the future, return the formatted date
   if (dbDate >= today) {
     return formatedDate(dbDate);
   }
