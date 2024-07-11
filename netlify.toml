@@ -8,5 +8,5 @@
       Access-Control-Allow-Origin = "*"
 
 [[plugins]]
-  package = "@netlify/plugin-scheduled-functions"
+  package = "@netlify/scheduled-job"
   config.schedule = "* * * * *"  # This cron expression runs every minute
