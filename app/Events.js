@@ -149,7 +149,9 @@ const Events = () => {
               })}
             </Typography>
             <Typography variant="overline" gutterBottom>
-              {event.type}
+              {event.type === "cavaleri"
+                ? "Catan - Orașe și Cavaleri"
+                : event.type}
             </Typography>
 
             {isAdmin && (
