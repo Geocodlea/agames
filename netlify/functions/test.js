@@ -28,6 +28,10 @@ export default async () => {
         },
       });
 
+      console.log(user.email);
+      console.log(transporter);
+      console.log(process.env.EMAIL_FROM);
+
       // Send the email
       await transporter.sendMail({
         from: process.env.EMAIL_FROM,
