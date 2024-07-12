@@ -12,7 +12,7 @@ export default async () => {
 
   const users = await User.find().select("lastActive email");
 
-  users.map(async (user) => {
+  const emailPromises = users.map(async (user) => {
     // Compare the dates
     if (user.lastActive > oneMinuteAgo) {
       console.log("The date is within the last minute.");
@@ -28,17 +28,20 @@ export default async () => {
         },
       });
 
-      console.log(user.email);
-      console.log(transporter);
-      console.log(process.env.EMAIL_FROM);
-
-      // Send the email
-      await transporter.sendMail({
-        from: process.env.EMAIL_FROM,
-        to: user.email,
-        subject: `Message from AGames - TEST`,
-        text: `TEST MAILLLLL`,
-      });
+      try {
+        // Send the email
+        await transporter.sendMail({
+          from: process.env.EMAIL_FROM,
+          to: user.email,
+          subject: `Message from AGames - TEST`,
+          text: `TEST MAILLLLL`,
+        });
+        console.log(`Email sent to ${user.email}`);
+      } catch (error) {
+        console.error(`Failed to send email to ${user.email}:`, error);
+      }
     }
   });
+
+  await Promise.all(emailPromises);
 };
