@@ -43,5 +43,5 @@ export default async () => {
     }
   });
 
-  await Promise.all(emailPromises);
+  // await Promise.all(emailPromises);
 };
