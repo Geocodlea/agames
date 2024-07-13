@@ -24,8 +24,8 @@ export default async () => {
   }).select(" email lastActive");
 
   const emailPromises = users.map(async (user) => {
-    // lastActive < 1 year + 1 month ago delete account || lastActive < 1 year ago send mail
-    if (user.lastActive < oneYearAndOneMonthAgo) {
+    // lastActive <= 1 year + 1 month ago delete account || lastActive < 1 year ago send mail
+    if (user.lastActive <= oneYearAndOneMonthAgo) {
       await User.deleteOne({ _id: user._id });
     } else {
       const deletionDate = new Date(
