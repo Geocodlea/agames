@@ -1,5 +1,6 @@
 import dbConnect from "../../utils/dbConnect";
 import User from "../../models/User";
+
 import nodemailer from "nodemailer";
 import { emailFooter, emailFooterHtml } from "../../utils/emailFooter";
 
@@ -8,12 +9,6 @@ export default async () => {
 
   // Get the current date
   const currentDate = new Date();
-
-  // Calculate one minute ago from the current time
-  const oneMinuteAgo = new Date(currentDate.getTime() - 1 * 60 * 1000);
-
-  // Calculate ten minutes ago from the current time
-  const tenMinuteAgo = new Date(currentDate.getTime() - 10 * 60 * 1000);
 
   // Calculate one year ago from the current date
   const oneYearAgo = new Date(currentDate);
@@ -25,17 +20,14 @@ export default async () => {
   oneYearAndOneMonthAgo.setMonth(currentDate.getMonth() - 1);
 
   const users = await User.find({
-    lastActive: { $lt: oneMinuteAgo },
+    lastActive: { $lt: oneYearAgo },
   }).select(" email lastActive");
 
   const emailPromises = users.map(async (user) => {
-    // Compare the dates
-    if (user.lastActive < tenMinuteAgo) {
-      console.log("The date is older than 10 minutes.");
+    // lastActive < 1 year + 1 month ago delete account || lastActive < 1 year ago send mail
+    if (user.lastActive < oneYearAndOneMonthAgo) {
       await User.deleteOne({ _id: user._id });
     } else {
-      console.log("The date is one minute old.");
-
       const deletionDate = new Date(
         currentDate.setMonth(currentDate.getMonth() + 1)
       ).toLocaleDateString("ro-RO");
@@ -54,7 +46,7 @@ export default async () => {
         // Send the email
         await transporter.sendMail({
           from: process.env.EMAIL_FROM,
-          to: "geocodlea@yahoo.com",
+          to: user.email,
           subject: "Important Notice: Your Account is at Risk of Deletion",
           text: `Hi, \n\n We hope this message finds you well. \n\n Our records show that you haven’t logged into your account for over a year. To maintain our system’s efficiency and security, we periodically remove inactive accounts. \n\n Please be aware: If you do not log in within the next 30 days, your account will be permanently deleted. \n\n We value you as a user and would love to have you back. Please log in before ${deletionDate} to keep your account active: \n\n ${loginLink} \n\n Best regards, \n AGames Team \n\n P.S. If you no longer wish to keep your account, no action is required on your part. It will be automatically deleted after ${deletionDate}. ${emailFooter}`,
           html: `
