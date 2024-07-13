@@ -1,10 +1,21 @@
+import { authOptions } from "/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
+
 import styles from "./page.module.css";
 
 import Events from "./Events";
 import Leaderboard from "./Leaderboard";
 import OldEvents from "./OldEvents";
 
-const Home = () => {
+import dbConnect from "/utils/dbConnect";
+import User from "/models/User";
+
+const Home = async () => {
+  const session = await getServerSession(authOptions);
+
+  await dbConnect();
+  await User.updateOne({ _id: session?.user.id }, { lastActive: new Date() });
+
   return (
     <>
       <h1 className={styles.title}>EVENIMENTE</h1>

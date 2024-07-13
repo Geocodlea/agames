@@ -11,6 +11,7 @@ global.models.User =
     emailVerified: { type: Date },
     role: { type: String },
     tel: { type: String },
+    lastActive: { type: Date },
   });
 
 export default global.models.User;
