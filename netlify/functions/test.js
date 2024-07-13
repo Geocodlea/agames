@@ -36,6 +36,11 @@ export default async () => {
     } else {
       console.log("The date is one minute old.");
 
+      const deletionDate = new Date(
+        currentDate.setMonth(currentDate.getMonth() + 1)
+      ).toLocaleDateString("ro-RO");
+      const loginLink = `${process.env.DEPLOYED_URL}/auth/signin`;
+
       // Create a transporter with your email service provider's details
       const transporter = nodemailer.createTransport({
         service: "Gmail",
@@ -51,33 +56,19 @@ export default async () => {
           from: process.env.EMAIL_FROM,
           to: user.email,
           subject: "Important Notice: Your Account is at Risk of Deletion",
-          text: `
-Hi,
-
-We hope this message finds you well.
-
-Our records show that you haven’t logged into your account for over a year. To maintain our system’s efficiency and security, we periodically remove inactive accounts.
-
-Please be aware: If you do not log in within the next 30 days, your account will be permanently deleted.
-
-We value you as a user and would love to have you back. Please log in before [${new Date(
-            new Date().setDate(new Date().getDate() + 30)
-          ).toLocaleDateString()}] to keep your account active:
-
-[${process.env.DEPLOYED_URL}/auth/signin}]
-
-If you have any questions or need assistance, our support team is here to help.
-
-Best regards,
-
-AGames Team
-
-P.S. If you no longer wish to keep your account, no action is required on your part. It will be automatically deleted after [${new Date(
-            new Date().setDate(new Date().getDate() + 30)
-          ).toLocaleDateString()}].
-
-${emailFooter}
-`,
+          html: `
+          <p>Hi,</p>
+          <p>We hope this message finds you well.</p>
+          <p>Our records show that you haven’t logged into your account for over a year. To maintain our system’s efficiency and security, we periodically remove inactive accounts.</p>
+          <p><strong>Please be aware: If you do not log in within the next 30 days, your account will be permanently deleted.</strong></p>
+          <p>We value you as a user and would love to have you back. Please log in before <strong>${deletionDate}</strong> to keep your account active:</p>
+          <p><a href="${loginLink}" style="text-decoration: none;"><button style="display: inline-block; padding: 10px 20px; font-size: 16px; color: white; background-color: #007bff; border: none; border-radius: 5px;">Log in to your account</button></a></p>
+          <p>If you have any questions or need assistance, our support team is here to help.</p>
+          <p>Best regards,</p>
+          <p><strong>[Your Company Name] Team</strong></p>
+          <p>P.S. If you no longer wish to keep your account, no action is required on your part. It will be automatically deleted after <strong>${deletionDate}</strong>.</p>
+          ${emailFooter}
+        `,
         });
         console.log(`Email sent to ${user.email}`);
       } catch (error) {
