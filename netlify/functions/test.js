@@ -1,7 +1,7 @@
 import dbConnect from "../../utils/dbConnect";
 import User from "../../models/User";
 import nodemailer from "nodemailer";
-import { emailFooter } from "utils/emailFooter";
+import { emailFooter } from "../../utils/emailFooter";
 
 export default async () => {
   await dbConnect();
