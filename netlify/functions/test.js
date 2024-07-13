@@ -1,45 +1,88 @@
 import dbConnect from "../../utils/dbConnect";
 import User from "../../models/User";
 import nodemailer from "nodemailer";
+import { emailFooter } from "utils/emailFooter";
 
 export default async () => {
   await dbConnect();
 
+  // Get the current date
   const currentDate = new Date();
 
   // Calculate one minute ago from the current time
   const oneMinuteAgo = new Date(currentDate.getTime() - 1 * 60 * 1000);
 
-  const users = await User.find().select("lastActive email");
+  // Calculate ten minutes ago from the current time
+  const tenMinuteAgo = new Date(currentDate.getTime() - 10 * 60 * 1000);
+
+  // Calculate one year ago from the current date
+  const oneYearAgo = new Date(currentDate);
+  oneYearAgo.setFullYear(currentDate.getFullYear() - 1);
+
+  // Combine one year and one month ago
+  const oneYearAndOneMonthAgo = new Date(currentDate);
+  oneYearAndOneMonthAgo.setFullYear(currentDate.getFullYear() - 1);
+  oneYearAndOneMonthAgo.setMonth(currentDate.getMonth() - 1);
+
+  const users = await User.find({
+    lastActive: { $lt: oneMinuteAgo },
+  }).select(" email lastActive");
 
   const emailPromises = users.map(async (user) => {
     // Compare the dates
-    if (user.lastActive > oneMinuteAgo) {
-      console.log("The date is within the last minute.");
+    if (user.lastActive < tenMinuteAgo) {
+      console.log("The date is older than 10 minutes.");
+      await User.deleteOne({ _id: user._id });
     } else {
-      console.log("The date is more than one minute old.");
+      console.log("The date is one minute old.");
 
-      //     // Create a transporter with your email service provider's details
-      //     const transporter = nodemailer.createTransport({
-      //       service: "Gmail",
-      //       auth: {
-      //         user: process.env.EMAIL_USER,
-      //         pass: process.env.EMAIL_PASS,
-      //       },
-      //     });
+      // Create a transporter with your email service provider's details
+      const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
 
-      //     try {
-      //       // Send the email
-      //       await transporter.sendMail({
-      //         from: process.env.EMAIL_FROM,
-      //         to: user.email,
-      //         subject: `Ate`,
-      //         text: `TEST MAILLLLL`,
-      //       });
-      //       console.log(`Email sent to ${user.email}`);
-      //     } catch (error) {
-      //       console.error(`Failed to send email to ${user.email}:`, error);
-      //     }
+      try {
+        // Send the email
+        await transporter.sendMail({
+          from: process.env.EMAIL_FROM,
+          to: user.email,
+          subject: "Important Notice: Your Account is at Risk of Deletion",
+          text: `
+Hi,
+
+We hope this message finds you well.
+
+Our records show that you haven’t logged into your account for over a year. To maintain our system’s efficiency and security, we periodically remove inactive accounts.
+
+Please be aware: If you do not log in within the next 30 days, your account will be permanently deleted.
+
+We value you as a user and would love to have you back. Please log in before [${new Date(
+            new Date().setDate(new Date().getDate() + 30)
+          ).toLocaleDateString()}] to keep your account active:
+
+[${process.env.DEPLOYED_URL}/auth/signin}]
+
+If you have any questions or need assistance, our support team is here to help.
+
+Best regards,
+
+AGames Team
+
+P.S. If you no longer wish to keep your account, no action is required on your part. It will be automatically deleted after [${new Date(
+            new Date().setDate(new Date().getDate() + 30)
+          ).toLocaleDateString()}].
+
+${emailFooter}
+`,
+        });
+        console.log(`Email sent to ${user.email}`);
+      } catch (error) {
+        console.error(`Failed to send email to ${user.email}:`, error);
+      }
     }
   });
 
