@@ -8,10 +8,14 @@ const isSubscribed = async (email) => {
   await dbConnect();
   const user = await User.findOne({ email }).select("unsubscribed");
 
+  console.log("User found:", user); // Debugging line
+
   if (!user || user.unsubscribed) {
+    console.log("User is not subscribed or not found"); // Debugging line
     return false;
   }
 
+  console.log("User is subscribed"); // Debugging line
   return true;
 };
 

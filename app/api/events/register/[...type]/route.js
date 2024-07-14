@@ -50,7 +50,10 @@ export async function POST(request, { params }) {
   const participant = new ParticipantType(session.user);
   await participant.save();
 
+  console.log(await isSubscribed(session.user.email));
+
   if (await isSubscribed(session.user.email)) {
+    console.log("Sending email to:", session.user.email);
     try {
       await transporter.sendMail({
         from: process.env.EMAIL_FROM,
