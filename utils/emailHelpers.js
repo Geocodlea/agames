@@ -1,5 +1,5 @@
-import dbConnect from "/utils/dbConnect";
-import User from "/models/User";
+import dbConnect from "./dbConnect";
+import User from "../models/User";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 
