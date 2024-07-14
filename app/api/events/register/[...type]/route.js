@@ -2,9 +2,13 @@ import dbConnect from "/utils/dbConnect";
 import { NextResponse } from "next/server";
 import * as Participants from "@/models/Participants";
 import * as Verifications from "@/models/Verifications";
-import nodemailer from "nodemailer";
-import { emailFooter } from "@/utils/emailFooter";
-import jwt from "jsonwebtoken";
+
+import {
+  isSubscribed,
+  transporter,
+  footerText,
+  footerHtml,
+} from "/utils/emailHelpers";
 
 export async function POST(request, { params }) {
   const [type] = params.type;
@@ -46,38 +50,34 @@ export async function POST(request, { params }) {
   const participant = new ParticipantType(session.user);
   await participant.save();
 
-  const token = jwt.sign(
-    { email: session.user.email },
-    process.env.NEXTAUTH_SECRET
-  );
+  if (await isSubscribed(session.user.email)) {
+    try {
+      await transporter.sendMail({
+        from: process.env.EMAIL_FROM,
+        to: session.user.email,
+        subject: `Înscriere Seara de ${type}`,
+        text: `Salutare ${
+          session.user.name
+        }, ne bucură înscrierea ta la Seara de ${type}. \r\n\r\n În cazul în care nu vei mai putea ajunge, te rugăm să ne anunți sau să îți anulezi înscrierea pe site: www.agames.ro \r\n\r\n Mulțumim, o zi frumoasă în continuare 😊 ${footerText(
+          session.user.email
+        )}`,
+        html: `<p>Salutare ${session.user.name},</p>
+               <p>Ne bucură înscrierea ta la Seara de ${type}.</p>
+               <p>În cazul în care nu vei mai putea ajunge, te rugăm să ne anunți sau să îți anulezi înscrierea pe site: <a href="http://www.agames.ro">www.agames.ro</a></p>
+               <p>Mulțumim, o zi frumoasă în continuare 😊</p>
+               <p>${footerHtml(session.user.email)}</p>`,
+      });
 
-  const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
-
-  try {
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
-      to: session.user.email,
-      subject: `Înscriere Seara de ${type}`,
-      text: `Salutare ${
-        session.user.name
-      }, ne bucură înscrierea ta la Seara de ${type}. \r\n\r\n În cazul în care nu vei mai putea ajunge, te rugăm să ne anunți sau să îți anulezi înscrierea pe site: www.agames.ro \r\n\r\n Mulțumim, o zi frumoasă în continuare 😊 ${emailFooter(
-        token
-      )}`,
-    });
-
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    return NextResponse.json({
-      success: false,
-      message: "Failed to send email",
-    });
+      return NextResponse.json({ success: true });
+    } catch (error) {
+      return NextResponse.json({
+        success: false,
+        message: "Failed to send email",
+      });
+    }
   }
+
+  return NextResponse.json({ success: true });
 }
 
 export async function DELETE(request, { params }) {

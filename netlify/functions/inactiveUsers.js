@@ -1,8 +1,7 @@
 import dbConnect from "../../utils/dbConnect";
 import User from "../../models/User";
 
-import nodemailer from "nodemailer";
-import { emailFooter, emailFooterHtml } from "../../utils/emailFooter";
+import { transporter, footerText, footerHtml } from "../../utils/emailHelpers";
 
 export default async () => {
   await dbConnect();
@@ -33,22 +32,15 @@ export default async () => {
       ).toLocaleDateString("ro-RO");
       const loginLink = `${process.env.DEPLOYED_URL}/auth/signin`;
 
-      // Create a transporter with your email service provider's details
-      const transporter = nodemailer.createTransport({
-        service: "Gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-
       try {
         // Send the email
         await transporter.sendMail({
           from: process.env.EMAIL_FROM,
           to: user.email,
           subject: "Important Notice: Your Account is at Risk of Deletion",
-          text: `Hi, \n\n We hope this message finds you well. \n\n Our records show that you haven’t logged into your account for over a year. To maintain our system’s efficiency and security, we periodically remove inactive accounts. \n\n Please be aware: If you do not log in within the next 30 days, your account will be permanently deleted. \n\n We value you as a user and would love to have you back. Please log in before ${deletionDate} to keep your account active: \n\n ${loginLink} \n\n Best regards, \n AGames Team \n\n P.S. If you no longer wish to keep your account, no action is required on your part. It will be automatically deleted after ${deletionDate}. ${emailFooter}`,
+          text: `Hi, \n\n We hope this message finds you well. \n\n Our records show that you haven’t logged into your account for over a year. To maintain our system’s efficiency and security, we periodically remove inactive accounts. \n\n Please be aware: If you do not log in within the next 30 days, your account will be permanently deleted. \n\n We value you as a user and would love to have you back. Please log in before ${deletionDate} to keep your account active: \n\n ${loginLink} \n\n Best regards, \n AGames Team \n\n P.S. If you no longer wish to keep your account, no action is required on your part. It will be automatically deleted after ${deletionDate}. ${footerText(
+            user.email
+          )}`,
           html: `
                 <p>Hi,</p>
                 <p>We hope this message finds you well.</p>
@@ -60,7 +52,7 @@ export default async () => {
                 <p>Best regards,<br />
                 <strong>AGames Team</strong></p>
                 <p>P.S. If you no longer wish to keep your account, no action is required on your part. It will be automatically deleted after <strong>${deletionDate}</strong>.</p>
-                ${emailFooterHtml}
+                ${footerHtml(user.email)}
               `,
         });
       } catch (error) {
