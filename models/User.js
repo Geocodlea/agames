@@ -12,6 +12,7 @@ global.models.User =
     role: { type: String },
     tel: { type: String },
     lastActive: { type: Date },
+    unsubscribed: { type: Boolean },
   });
 
 export default global.models.User;

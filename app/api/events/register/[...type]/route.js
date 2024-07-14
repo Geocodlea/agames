@@ -4,6 +4,7 @@ import * as Participants from "@/models/Participants";
 import * as Verifications from "@/models/Verifications";
 import nodemailer from "nodemailer";
 import { emailFooter } from "@/utils/emailFooter";
+import jwt from "jsonwebtoken";
 
 export async function POST(request, { params }) {
   const [type] = params.type;
@@ -45,6 +46,11 @@ export async function POST(request, { params }) {
   const participant = new ParticipantType(session.user);
   await participant.save();
 
+  const token = jwt.sign(
+    { email: session.user.email },
+    process.env.NEXTAUTH_SECRET
+  );
+
   const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
@@ -58,7 +64,11 @@ export async function POST(request, { params }) {
       from: process.env.EMAIL_FROM,
       to: session.user.email,
       subject: `Înscriere Seara de ${type}`,
-      text: `Salutare ${session.user.name}, ne bucură înscrierea ta la Seara de ${type}. \r\n\r\n În cazul în care nu vei mai putea ajunge, te rugăm să ne anunți sau să îți anulezi înscrierea pe site: www.agames.ro \r\n\r\n Mulțumim, o zi frumoasă în continuare 😊 ${emailFooter}`,
+      text: `Salutare ${
+        session.user.name
+      }, ne bucură înscrierea ta la Seara de ${type}. \r\n\r\n În cazul în care nu vei mai putea ajunge, te rugăm să ne anunți sau să îți anulezi înscrierea pe site: www.agames.ro \r\n\r\n Mulțumim, o zi frumoasă în continuare 😊 ${emailFooter(
+        token
+      )}`,
     });
 
     return NextResponse.json({ success: true });
