@@ -3,6 +3,8 @@ import EditableDataGrid from "@/components/EditableDataGrid";
 import dbConnect from "/utils/dbConnect";
 import OldEvents from "/models/OldEvents";
 
+import { Typography } from "@mui/material";
+
 const columnGroupingModel = [
   {
     groupId: "Masa",
@@ -234,7 +236,7 @@ const OldEventTable = async ({ params }) => {
 
   return (
     <>
-      <h3>Clasament</h3>
+      <Typography variant="h2">Clasament</Typography>
       <EditableDataGrid
         columnsData={columnsData}
         rowsData={filteredOldEvent}

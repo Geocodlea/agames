@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { authOptions } from "/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth/next";
 
-import { Paper, Box, Stack } from "@mui/material";
+import { Paper, Box, Stack, Typography } from "@mui/material";
 
 import ProfileForm from "./ProfileForm";
 import DeleteAccount from "./DeleteAccount";
@@ -73,14 +73,14 @@ export default async function Profile() {
         <ProfileImage />
       </Box>
 
-      <Stack spacing={8}>
+      <Stack spacing={6}>
         <div>
-          <h3>Profile</h3>
+          <Typography variant="h2">Profile</Typography>
           <ProfileForm />
         </div>
 
         <div>
-          <h3>Istoric Participări</h3>
+          <Typography variant="h2">Istoric Participări</Typography>
           <EditableDataGrid
             columnsData={columnsData}
             rowsData={filteredParticipations}
@@ -91,10 +91,10 @@ export default async function Profile() {
 
         <div>
           <Box mb={2} mt={4}>
-            <p>
+            <Typography variant="body1" gutterBottom>
               Toate datele contului vor fi șterse permanent și nu vei mai avea
               posibilitatea să reactivezi acest cont.
-            </p>
+            </Typography>
           </Box>
           <DeleteAccount />
         </div>

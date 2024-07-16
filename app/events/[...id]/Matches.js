@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import EditableDataGrid from "@/components/EditableDataGrid";
 import CountdownTimer from "@/components/CountdownTimer";
-import { Box, Stack, Skeleton } from "@mui/material";
+import { Box, Stack, Skeleton, Typography } from "@mui/material";
 
 export default function Matches({ type, round, host, isAdmin }) {
   const [matches, setMatches] = useState([]);
@@ -91,7 +91,9 @@ export default function Matches({ type, round, host, isAdmin }) {
             }}
             key={index}
           >
-            <h3>Meciuri - Runda {round - index}</h3>
+            <Typography variant="h2">
+              Meciuri - Runda {round - index}
+            </Typography>
             <Stack spacing={6}>
               {match.map((match, i) => (
                 <Box key={i}>

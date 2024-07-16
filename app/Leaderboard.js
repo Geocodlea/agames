@@ -3,7 +3,7 @@ import EditableDataGrid from "@/components/EditableDataGrid";
 import dbConnect from "/utils/dbConnect";
 import Leaderboard from "/models/Leaderboard";
 
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const LeaderboardTable = async () => {
   await dbConnect();
@@ -37,7 +37,7 @@ const LeaderboardTable = async () => {
 
   return (
     <Box mb={8} mt={8} sx={{ width: "100%", maxWidth: "800px" }}>
-      <h3>Leaderboard</h3>
+      <Typography variant="h2">Leaderboard</Typography>
       <EditableDataGrid
         columnsData={columnsData}
         rowsData={filteredLeaderboard}

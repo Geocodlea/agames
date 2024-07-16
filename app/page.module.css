@@ -127,14 +127,6 @@
   position: relative;
 }
 
-.title {
-  font-size: 7rem;
-  font-weight: bold;
-  margin-bottom: 4rem;
-  text-align: center;
-  text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
-}
-
 /* Tablet and Smaller Desktop */
 @media (min-width: 701px) and (max-width: 1120px) {
   .grid {
@@ -146,23 +138,8 @@
     padding: 3rem;
   }
 
-  .title {
-    font-size: 5rem;
-    margin-bottom: 3rem;
-  }
-
   .card h2 {
     font-size: 3rem;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .vercelLogo {
-    filter: invert(1);
-  }
-
-  .logo {
-    filter: invert(1) drop-shadow(0 0 0.3rem #ffffff70);
   }
 }
 
@@ -221,11 +198,6 @@
     z-index: 1;
   }
 
-  .title {
-    font-size: 3rem;
-    margin-bottom: 2rem;
-  }
-
   .card h2 {
     font-size: 2rem;
   }
@@ -246,15 +218,6 @@
 @media (prefers-reduced-motion) {
   .card:hover span {
     transform: none;
-  }
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(360deg);
-  }
-  to {
-    transform: rotate(0deg);
   }
 }
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import EditableDataGrid from "@/components/EditableDataGrid";
-import { Box, Stack, Skeleton } from "@mui/material";
+import { Box, Stack, Skeleton, Typography } from "@mui/material";
 
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
@@ -139,7 +139,7 @@ export default function PersonalMatch({
     <Box sx={{ margin: "auto", maxWidth: "800px" }}>
       {participants.length ? (
         <>
-          <h3>Masa {participants[0]?.table}</h3>
+          <Typography variant="h2">Masa {participants[0]?.table}</Typography>
           <EditableDataGrid
             columnsData={columnsData}
             rowsData={participants}
@@ -190,21 +190,21 @@ export default function PersonalMatch({
               </Form>
             )}
           </Formik>
-          <p style={{ textAlign: "justify" }}>
+          <Typography variant="body1" gutterBottom>
             Rugăm primul jucător afișat la această masă să introducă mai sus, la
             finalul meciului, rezultatele tuturor de la masa sa și să încarce o
             poză cu masa de joc, de unde să reiasă punctajele. Ceilalți, vă
             rugăm să verificați în secțiunea Meciuri și Clasament corectitudinea
             informațiilor afișate. Secțiunile Meciuri și Clasament se
             actualizează automat la fiecare 30 sec.
-          </p>
+          </Typography>
         </>
       ) : (
-        <p>
+        <Typography variant="body1" gutterBottom>
           Salutare, în prezent este deja activ un eveniment. Îi poți urmări
           desfășurarea la celelalte secțiuni ale acestui meniu :) Înscrierile
           pentru următorul eveniment vor fi disponibile în maxim 2 zile.
-        </p>
+        </Typography>
       )}
     </Box>
   );

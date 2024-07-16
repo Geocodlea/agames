@@ -3,7 +3,6 @@
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 
-import styles from "/app/page.module.css";
 import { Button, Typography, Stack, Divider } from "@mui/material";
 
 import { Formik, Form, Field } from "formik";
@@ -38,10 +37,10 @@ const Providers = ({ providers }) => {
   if (error)
     return (
       <>
-        <Typography variant="h1" className={styles.title} color={"error"}>
+        <Typography variant="h1" color={"error"} gutterBottom>
           ERROR
         </Typography>
-        <Typography align="center" sx={{ fontSize: "2rem" }}>
+        <Typography variant="h4" gutterBottom>
           {error}
         </Typography>
       </>

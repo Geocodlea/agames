@@ -61,7 +61,7 @@ export default function Participanti({ type, round, isAdmin }) {
 
   return (
     <div>
-      <h3>Participanți</h3>
+      <Typography variant="h2">Participanți</Typography>
       <EditableDataGrid
         columnsData={columnsData}
         rowsData={participants}

@@ -143,7 +143,7 @@ const Events = () => {
                 </Button>
               </Link>
             </Box>
-            <Typography className={styles.code}>
+            <Typography className={styles.code} align="center">
               {getEventDates(event.type, event.date)}
             </Typography>
             <Typography variant="overline" gutterBottom>

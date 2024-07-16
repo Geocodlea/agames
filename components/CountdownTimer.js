@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Typography } from "@mui/material";
 
 const CountdownTimer = ({ targetDate }) => {
   const [timeLeft, setTimeLeft] = useState("");
@@ -26,7 +27,11 @@ const CountdownTimer = ({ targetDate }) => {
     return () => clearInterval(timer);
   }, [targetDate]);
 
-  return <h4 style={{ padding: "1rem" }}>Timp rămas: {timeLeft}</h4>;
+  return (
+    <Typography variant="h6" gutterBottom>
+      Timp rămas: {timeLeft}
+    </Typography>
+  );
 };
 
 export default CountdownTimer;

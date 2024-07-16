@@ -5,8 +5,11 @@ import { Box, Typography, Stack, Avatar } from "@mui/material";
 export default async function About() {
   return (
     <>
-      <h1 className={styles.title}>About Us</h1>
-      <p className={styles.description} style={{ marginBottom: "2rem" }}>
+      <Typography variant="h1" gutterBottom>
+        About Us
+      </Typography>
+
+      <Typography variant="body1" mb={4}>
         Welcome to AGames, your ultimate destination for engaging and exciting
         board game events! Whether you're a seasoned strategist, a casual gamer,
         or someone just looking to have fun, we create unforgettable experiences
@@ -26,8 +29,9 @@ export default async function About() {
         Discover your next favorite game and make lasting memories with us. Come
         roll the dice, draw the cards, and be part of our vibrant gaming
         community. Welcome to AGames, where every event is a game-changer!
-      </p>
-      <Typography variant="h6" className={styles.code} mb={3}>
+      </Typography>
+
+      <Typography variant="h6" gutterBottom>
         Here is our team:
       </Typography>
       <Box className={styles.grid} sx={{ textAlign: "center" }}>

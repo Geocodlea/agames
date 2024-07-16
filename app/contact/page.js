@@ -11,7 +11,9 @@ export default function Contact() {
       spacing={{ xs: 4, md: 8, lg: 16 }}
     >
       <Stack spacing={2}>
-        <h3>Send us a message</h3>
+        <Typography variant="h3" gutterBottom>
+          Send us a message
+        </Typography>
         <ContactForm />
       </Stack>
 
@@ -22,7 +24,7 @@ export default function Contact() {
             <Typography variant="h5" sx={{ fontWeight: "bold" }}>
               Find us at
             </Typography>
-            <Typography variant="body1">
+            <Typography variant="body2">
               Creative Board Gaming <br />
               Str Mendeleev, nr 29, Sector 1 <br />
               București,{" "}
@@ -38,7 +40,7 @@ export default function Contact() {
             <Typography variant="h5" sx={{ fontWeight: "bold" }}>
               Contact
             </Typography>
-            <Typography variant="body1">
+            <Typography variant="body2">
               Tel: <a href="tel:0736465213">0736465213</a>
               <br />
               Email: <a href="mailto:contact@cbgshop.ro">contact@cbgshop.ro</a>

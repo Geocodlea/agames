@@ -1,7 +1,7 @@
 import { authOptions } from "/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth/next";
 
-import styles from "./page.module.css";
+import { Typography } from "@mui/material";
 
 import Events from "./Events";
 import Leaderboard from "./Leaderboard";
@@ -18,11 +18,13 @@ const Home = async () => {
 
   return (
     <>
-      <h1 className={styles.title}>EVENIMENTE</h1>
-      <p className={styles.description} style={{ marginBottom: "3rem" }}>
+      <Typography variant="h1" gutterBottom>
+        EVENIMENTE
+      </Typography>
+      <Typography variant="body1" mb={6}>
         TE AȘTEPTĂM LA CONCURSURI, JOCURI AMICALE SAU SESIUNI DE LEARN & PLAY,
         LIVE ȘI ONLINE, LA CELE MAI POPULARE BOARD GAMES.
-      </p>
+      </Typography>
       <Events />
       <Leaderboard />
       <OldEvents />
