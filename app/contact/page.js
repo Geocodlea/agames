@@ -21,9 +21,7 @@ export default function Contact() {
         <Stack spacing={2} direction="row">
           <PinDropSharpIcon color="info" fontSize="large" />
           <Stack spacing={2}>
-            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-              Find us at
-            </Typography>
+            <Typography variant="h5">Find us at</Typography>
             <Typography variant="body2">
               Creative Board Gaming <br />
               Str Mendeleev, nr 29, Sector 1 <br />
@@ -37,9 +35,7 @@ export default function Contact() {
         <Stack spacing={2} direction="row">
           <CallIcon color="info" fontSize="large" />
           <Stack spacing={2}>
-            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-              Contact
-            </Typography>
+            <Typography variant="h5">Contact</Typography>
             <Typography variant="body2">
               Tel: <a href="tel:0736465213">0736465213</a>
               <br />

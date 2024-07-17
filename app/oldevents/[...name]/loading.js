@@ -1,9 +1,11 @@
-import { Skeleton } from "@mui/material";
+import { Skeleton, Typography } from "@mui/material";
 
 export default function Loading() {
   return (
     <>
-      <Skeleton width="70%" height={80} sx={{ margin: "1rem auto" }} />
+      <Typography variant="h2" gutterBottom>
+        <Skeleton width="50vw" />
+      </Typography>
       <Skeleton variant="rounded" width="100%" height="50vh" />
     </>
   );

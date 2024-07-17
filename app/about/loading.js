@@ -1,26 +1,26 @@
 import styles from "/app/page.module.css";
 
-import { Box, Stack, Skeleton } from "@mui/material";
-
-const skeletons = [1, 2, 3, 4];
+import { Box, Stack, Skeleton, Typography } from "@mui/material";
 
 export default function Loading() {
   return (
     <>
-      <Skeleton width="70%" className={styles.title} />
+      <Typography variant="h1" gutterBottom>
+        <Skeleton width="50vw" />
+      </Typography>
+
       <Skeleton variant="rounded" width="100%" height="50vh" />
-      <Skeleton
-        variant="rounded"
-        width={200}
-        height={30}
-        sx={{ margin: "2rem 0" }}
-      />
+
+      <Typography variant="h6" gutterBottom mt={4}>
+        <Skeleton width="20vw" />
+      </Typography>
+
       <Box className={styles.grid}>
-        {skeletons.map((skeleton) => (
+        {Array.from({ length: 4 }).map((_, i) => (
           <Stack
             spacing={1.5}
             sx={{ margin: "20px", alignItems: "center" }}
-            key={skeleton}
+            key={i}
           >
             <Skeleton variant="circular" width={80} height={80} />
             <Skeleton variant="rounded" width={85} height={32} />

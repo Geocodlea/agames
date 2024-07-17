@@ -295,7 +295,7 @@ const EditableDataGrid = ({
         }}
       >
         <Skeleton
-          variant="rectangular"
+          variant="rounded"
           animation="wave"
           height="50vh"
           width="100%"

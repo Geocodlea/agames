@@ -14,13 +14,13 @@ let theme = createTheme({
       fontWeight: 700,
     },
     h3: {
-      fontWeight: 600,
+      fontWeight: 700,
     },
     h4: {
-      fontWeight: 500,
+      fontWeight: 600,
     },
     h5: {
-      fontWeight: 400,
+      fontWeight: 600,
     },
     body1: {
       textAlign: "justify",
@@ -28,6 +28,6 @@ let theme = createTheme({
   },
 });
 
-theme = responsiveFontSizes(theme, { factor: 5 });
+theme = responsiveFontSizes(theme, { factor: 3 });
 
 export default theme;

@@ -2,7 +2,7 @@ import styles from "/app/page.module.css";
 
 import { Box, Typography, Stack, Avatar } from "@mui/material";
 
-export default async function About() {
+export default function About() {
   return (
     <>
       <Typography variant="h1" gutterBottom>
