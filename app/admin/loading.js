@@ -13,9 +13,9 @@ export default function Loading() {
         }}
       >
         <Stack spacing={2}>
-          <Typography variant="h2">
-            <Skeleton width="50%" />
-          </Typography>
+          <Skeleton>
+            <Typography variant="h2">Create Event</Typography>
+          </Skeleton>
           <Skeleton variant="rounded" width="100%" height={56} />
           <Skeleton variant="rounded" swidth="100%" height={148} />
           <Skeleton variant="rounded" width="100%" height={56} />
@@ -32,9 +32,9 @@ export default function Loading() {
       </Paper>
 
       <Stack spacing={2} width="100%">
-        <Typography variant="h2" sx={{ alignSelf: "center" }} pb={2}>
-          <Skeleton width="20vw" />
-        </Typography>
+        <Skeleton sx={{ alignSelf: "center" }}>
+          <Typography variant="h2">Users</Typography>
+        </Skeleton>
         <Skeleton variant="rounded" width="100%" height="50vh" />
       </Stack>
     </>

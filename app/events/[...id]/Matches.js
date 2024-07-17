@@ -27,10 +27,15 @@ export default function Matches({ type, round, host, isAdmin }) {
 
   if (loading) {
     return (
-      <Stack spacing={6} sx={{ margin: "auto", maxWidth: "800px" }}>
-        <Skeleton variant="rounded" width="60%" height={50} />
-        <Skeleton variant="rounded" width="100%" height={250} />
-        <Skeleton variant="rounded" width="100%" height={250} />
+      <Stack spacing={2} sx={{ margin: "auto", maxWidth: "800px" }}>
+        <Skeleton>
+          <Typography variant="h2">Meciuri - Runda 1</Typography>
+        </Skeleton>
+        <Stack spacing={6}>
+          <Skeleton variant="rounded" width="100%" height={250} />
+          <Skeleton variant="rounded" width="100%" height={250} />
+          <Skeleton variant="rounded" width="100%" height={250} />
+        </Stack>
       </Stack>
     );
   }

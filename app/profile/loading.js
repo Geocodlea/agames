@@ -28,9 +28,9 @@ export default function Loading() {
       </Box>
 
       <Stack spacing={2}>
-        <Typography variant="h2">
-          <Skeleton width="30%" />
-        </Typography>
+        <Skeleton>
+          <Typography variant="h2">Profile</Typography>
+        </Skeleton>
         <Skeleton variant="rounded" width="100%" height={56} />
         <Skeleton variant="rounded" width="100%" height={56} />
         <Skeleton variant="rounded" width="100%" height={56} />
@@ -42,9 +42,9 @@ export default function Loading() {
           style={{ margin: "1rem auto 3rem" }}
         />
 
-        <Typography variant="h2">
-          <Skeleton width="60%" />
-        </Typography>
+        <Skeleton>
+          <Typography variant="h2">Istoric Participări</Typography>
+        </Skeleton>
         <Skeleton variant="rounded" width="100%" height="50vh" />
 
         <Box pt={8}>

@@ -4,16 +4,18 @@ import styles from "./page.module.css";
 export default function Loading() {
   return (
     <>
-      <Typography variant="h1" gutterBottom>
-        <Skeleton width="50vw" />
-      </Typography>
+      <Skeleton>
+        <Typography variant="h1" gutterBottom>
+          EVENIMENTE
+        </Typography>
+      </Skeleton>
 
-      <Skeleton
-        variant="rounded"
-        width="100%"
-        height="10vh"
-        sx={{ margin: "1rem 0 3rem" }}
-      />
+      <Skeleton>
+        <Typography variant="body1" mb={6}>
+          TE AȘTEPTĂM LA CONCURSURI, JOCURI AMICALE SAU SESIUNI DE LEARN & PLAY,
+          LIVE ȘI ONLINE, LA CELE MAI POPULARE BOARD GAMES.
+        </Typography>
+      </Skeleton>
 
       <Box className={styles.grid}>
         {Array.from({ length: 4 }).map((_, i) => (
@@ -43,14 +45,19 @@ export default function Loading() {
         ))}
       </Box>
 
-      <Skeleton
-        variant="rounded"
-        width="100%"
-        height="40vh"
-        sx={{ margin: "5rem 0" }}
-      />
+      <Box mb={8} mt={8} sx={{ width: "100%", maxWidth: "800px" }}>
+        <Skeleton>
+          <Typography variant="h2">Leaderboard</Typography>
+        </Skeleton>
+        <Skeleton variant="rounded" width="100%" height="40vh" />
+      </Box>
 
-      <Skeleton variant="rounded" width="100%" height="40vh" />
+      <Box sx={{ width: "100%", maxWidth: "800px" }}>
+        <Skeleton>
+          <Typography variant="h2">Evenimente Anterioare</Typography>
+        </Skeleton>
+        <Skeleton variant="rounded" width="100%" height="40vh" />
+      </Box>
     </>
   );
 }

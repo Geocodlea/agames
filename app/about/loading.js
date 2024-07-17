@@ -5,15 +5,19 @@ import { Box, Stack, Skeleton, Typography } from "@mui/material";
 export default function Loading() {
   return (
     <>
-      <Typography variant="h1" gutterBottom>
-        <Skeleton width="50vw" />
-      </Typography>
+      <Skeleton>
+        <Typography variant="h1" gutterBottom>
+          About Us
+        </Typography>
+      </Skeleton>
 
       <Skeleton variant="rounded" width="100%" height="50vh" />
 
-      <Typography variant="h6" gutterBottom mt={4}>
-        <Skeleton width="20vw" />
-      </Typography>
+      <Skeleton sx={{ mt: 6 }}>
+        <Typography variant="h6" gutterBottom>
+          Here is our team:
+        </Typography>
+      </Skeleton>
 
       <Box className={styles.grid}>
         {Array.from({ length: 4 }).map((_, i) => (
