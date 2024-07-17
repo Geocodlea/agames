@@ -10,8 +10,8 @@ export default function Loading() {
         </Typography>
       </Skeleton>
 
-      <Skeleton>
-        <Typography variant="body1" mb={6}>
+      <Skeleton sx={{ mb: 6 }}>
+        <Typography variant="body1">
           TE AȘTEPTĂM LA CONCURSURI, JOCURI AMICALE SAU SESIUNI DE LEARN & PLAY,
           LIVE ȘI ONLINE, LA CELE MAI POPULARE BOARD GAMES.
         </Typography>
