@@ -12,6 +12,11 @@ import AlertMsg from "@/components/AlertMsg";
 export default function Register({ session, type }) {
   const [alert, setAlert] = useState({ text: "", severity: "" });
   const [loading, setLoading] = useState(false);
+  console.log(type);
+  const typeName =
+    type === "cavaleri"
+      ? "Catan - Orașe și Cavaleri"
+      : type.charAt(0).toUpperCase() + type.slice(1);
 
   const register = async () => {
     setLoading(true);
@@ -72,10 +77,23 @@ export default function Register({ session, type }) {
   return (
     <Box className={styles.grid}>
       <Box>
-        <Typography gutterBottom>
-          Pentru a te înscrie la Seara de Catan trebuie ca mai întâi să fii{" "}
-          <Link href="/api/auth/signin">logat</Link>
-        </Typography>
+        {session ? (
+          session?.user.name ? (
+            <Typography variant="body1" gutterBottom>
+              Înscrie-te la Seara de {typeName}, folosind butonul de mai jos:
+            </Typography>
+          ) : (
+            <Typography variant="body1" gutterBottom>
+              Pentru a te înscrie la Seara de {typeName} trebuie să ai definit
+              un nume în secțiunea <Link href="/profile">profil</Link>
+            </Typography>
+          )
+        ) : (
+          <Typography variant="body1" gutterBottom>
+            Pentru a te înscrie la Seara de {typeName} trebuie ca mai întâi să
+            fii <Link href="/api/auth/signin">logat</Link>
+          </Typography>
+        )}
         <LoadingButton
           loading={loading}
           loadingIndicator="Înscriere..."
@@ -90,7 +108,7 @@ export default function Register({ session, type }) {
       <Box>
         <Typography gutterBottom>
           Te rugăm să folosești această opțiune atunci când dorești să îți
-          anulezi participarea
+          anulezi participarea:
         </Typography>
         <Button
           variant="contained"
