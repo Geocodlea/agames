@@ -10,7 +10,9 @@ const StartButtons = ({ type, loading, round, start, timer }) => {
     if (round === 0) {
       return (
         <Box>
-          <Typography gutterBottom>Generare meciuri 4 juc.</Typography>
+          <Typography align="center" gutterBottom>
+            Generare meciuri 4 juc.
+          </Typography>
           <LoadingButton
             loading={loading}
             loadingIndicator="Generare..."
@@ -26,7 +28,9 @@ const StartButtons = ({ type, loading, round, start, timer }) => {
 
     return (
       <Box>
-        <Typography gutterBottom>Introdu minute durată meci</Typography>
+        <Typography align="center" gutterBottom>
+          Introdu minute durată meci
+        </Typography>
         <TextField
           variant="outlined"
           required
@@ -50,7 +54,9 @@ const StartButtons = ({ type, loading, round, start, timer }) => {
     return (
       <Stack spacing={2}>
         <Box>
-          <Typography gutterBottom>Generare meciuri 6 juc.</Typography>
+          <Typography align="center" gutterBottom>
+            Generare meciuri 6 juc.
+          </Typography>
           <LoadingButton
             loading={loading}
             loadingIndicator="Generare..."
@@ -93,10 +99,12 @@ const StartButtons = ({ type, loading, round, start, timer }) => {
 const ResetButton = ({ loading, round, isFinalRound, reset }) => (
   <Box>
     {round === 0 && (
-      <Typography gutterBottom>Șterge jucătorii înscriși</Typography>
+      <Typography align="center" gutterBottom>
+        Șterge jucătorii înscriși
+      </Typography>
     )}
     {isFinalRound && (
-      <Typography gutterBottom>
+      <Typography align="center" gutterBottom>
         Șterge și introduce eveniment în evenimente anterioare, introduce
         jucători în leaderboard
       </Typography>

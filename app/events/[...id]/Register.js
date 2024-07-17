@@ -12,7 +12,6 @@ import AlertMsg from "@/components/AlertMsg";
 export default function Register({ session, type }) {
   const [alert, setAlert] = useState({ text: "", severity: "" });
   const [loading, setLoading] = useState(false);
-  console.log(type);
   const typeName =
     type === "cavaleri"
       ? "Catan - Orașe și Cavaleri"
