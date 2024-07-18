@@ -1,18 +1,8 @@
-import styles from "/app/page.module.css";
-
 import { Box, Paper, Skeleton, Stack } from "@mui/material";
 
 export default function Loading() {
   return (
-    <Paper
-      elevation={24}
-      className={styles.card}
-      sx={{
-        width: "100%",
-        maxWidth: "600px",
-        marginBottom: "3rem",
-      }}
-    >
+    <Paper elevation={24} className="form-paper">
       <Stack spacing={2}>
         <Skeleton
           variant="rounded"
