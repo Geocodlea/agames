@@ -1,3 +1,15 @@
+const FILE_SIZE = 10000000; // 10 MB
+const FILE_SIZE_TEXT = "File size is too large, max 10 MB";
+const SUPPORTED_FORMATS = [
+  "image/jpg",
+  "image/jpeg",
+  "image/gif",
+  "image/png",
+  "image/webp",
+];
+const SUPPORTED_FORMATS_TEXT =
+  "Unsupported file type, accepted formats: jpg, jpeg, gif, png, webp";
+
 const sortOrder = (type, isFinished) => {
   if (type === "whist") {
     if (isFinished) {
@@ -134,4 +146,13 @@ const getEventDates = (type, date) => {
   return formatedDate(closestEveryOtherMonday);
 };
 
-export { sortOrder, gameName, oldEventsDate, getEventDates };
+export {
+  FILE_SIZE,
+  FILE_SIZE_TEXT,
+  SUPPORTED_FORMATS,
+  SUPPORTED_FORMATS_TEXT,
+  sortOrder,
+  gameName,
+  oldEventsDate,
+  getEventDates,
+};
