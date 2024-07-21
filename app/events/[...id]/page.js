@@ -34,22 +34,33 @@ export default function EventPage({ params }) {
   const router = useRouter();
 
   useEffect(() => {
-    const getRound = async () => {
-      const response = await fetch(`/api/events/round/${type}/${id}`);
-      const data = await response.json();
+    const getRound = async (retries = 3, delay = 2000) => {
+      try {
+        const response = await fetch(`/api/events/round/${type}/${id}`);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
 
-      // If event not exists, redirect to homepage
-      if (data.noEvent) {
-        revalidate();
-        router.push("/");
+        if (data.noEvent) {
+          revalidate();
+          router.push("/");
+        }
+
+        setRound(data.round);
+        setIsFinalRound(data.isFinalRound);
+      } catch (error) {
+        if (retries > 0) {
+          console.warn(`Retrying fetch... attempts remaining: ${retries}`);
+          setTimeout(() => getRound(retries - 1, delay), delay);
+        } else {
+          console.error("Failed to fetch round data after retries:", error);
+        }
       }
-
-      setRound(data.round);
-      setIsFinalRound(data.isFinalRound);
     };
 
     getRound();
-    const interval = setInterval(getRound, 10000);
+    const interval = setInterval(() => getRound(), 10000);
 
     return () => clearInterval(interval);
   }, []);
