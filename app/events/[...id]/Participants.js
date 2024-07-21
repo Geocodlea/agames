@@ -33,31 +33,36 @@ export default function Participanti({ type, round, isAdmin }) {
       minWidth: 150,
       flex: 1,
     },
-    {
-      field: "tel",
-      headerName: "Telefon",
-      editable: isAdmin,
-      width: 100,
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      editable: isAdmin,
-      width: 200,
-    },
-    {
-      field: "obs",
-      headerName: "Obs",
-      editable: isAdmin,
-      width: 200,
-    },
-    {
-      field: "rude",
-      headerName: "Rude",
-      editable: isAdmin,
-      width: 55,
-    },
   ];
+
+  if (isAdmin) {
+    columnsData.push(
+      {
+        field: "tel",
+        headerName: "Telefon",
+        editable: isAdmin,
+        width: 100,
+      },
+      {
+        field: "email",
+        headerName: "Email",
+        editable: isAdmin,
+        width: 200,
+      },
+      {
+        field: "obs",
+        headerName: "Obs",
+        editable: isAdmin,
+        width: 200,
+      },
+      {
+        field: "rude",
+        headerName: "Rude",
+        editable: isAdmin,
+        width: 55,
+      }
+    );
+  }
 
   return (
     <div>
