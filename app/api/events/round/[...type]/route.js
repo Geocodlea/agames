@@ -17,141 +17,148 @@ import { createMatches } from "@/utils/createMatches";
 export async function GET(request, { params }) {
   const [type, eventID] = params.type;
 
-  await dbConnect();
-  const event = await Event.findOne({ _id: eventID });
+  try {
+    await dbConnect();
+    const event = await Event.findOne({ _id: eventID });
 
-  // If event not exists, redirect to homepage
-  if (!event) {
-    return NextResponse.json({ noEvent: true });
-  }
+    if (!event) {
+      return NextResponse.json({ noEvent: true });
+    }
 
-  const VerificationsType = Verifications[`Verificari_live_${type}`];
-  const verification = await VerificationsType.findOne({
-    round: { $exists: true },
-  }).select("round");
-  let round = verification.round;
+    const VerificationsType = Verifications[`Verificari_live_${type}`];
+    const verification = await VerificationsType.findOne({
+      round: { $exists: true },
+    }).select("round");
 
-  const isFinalRound =
-    type === "catan"
-      ? round === 3
-      : type === "cavaleri" || type === "whist"
-      ? round === 2
-      : type === "rentz"
-      ? round === 1
-      : false;
+    if (!verification) {
+      throw new Error("Verification not found");
+    }
 
-  if (round === 0) {
-    return NextResponse.json({ round, isFinalRound });
-  }
+    let round = verification.round;
 
-  let MatchesType = Matches[`Meciuri_live_${type}_${round}`];
+    const isFinalRound =
+      (type === "catan" && round === 3) ||
+      ((type === "cavaleri" || type === "whist") && round === 2) ||
+      (type === "rentz" && round === 1) ||
+      false;
 
-  const roundScores = await MatchesType.find({
-    score: null,
-  }).count();
-  const allScoresSubmitted = roundScores === 0;
+    if (round === 0) {
+      return NextResponse.json({ round, isFinalRound });
+    }
 
-  if (!allScoresSubmitted) {
-    return NextResponse.json({ round, isFinalRound });
-  }
+    let MatchesType = Matches[`Meciuri_live_${type}_${round}`];
+    const roundScores = await MatchesType.find({ score: null }).count();
+    const allScoresSubmitted = roundScores === 0;
 
-  if (isFinalRound) {
-    await VerificationsType.updateOne(
-      { stop: true },
-      { stop: false, timer: null }
+    if (!allScoresSubmitted) {
+      return NextResponse.json({ round, isFinalRound });
+    }
+
+    if (isFinalRound) {
+      await VerificationsType.updateOne(
+        { stop: true },
+        { stop: false, timer: null }
+      );
+      return NextResponse.json({ round, isFinalRound });
+    }
+
+    // All scores submitted, start the next round
+    round++;
+    await VerificationsType.updateOne({ stop: true }, { round, timer: null });
+
+    MatchesType = Matches[`Meciuri_live_${type}_${round}`];
+    const ParticipantType = Participants[`Participanti_live_${type}`];
+    let participantsNumber = await ParticipantType.countDocuments();
+
+    if (type === "whist") {
+      participantsNumber = 12;
+    }
+
+    const playersPerTable = "6";
+
+    const participants = await ParticipantType.aggregate([
+      {
+        $lookup: {
+          from: `clasament_live_${type}`,
+          localField: "id",
+          foreignField: "id",
+          as: "participants",
+        },
+      },
+      {
+        $unwind: {
+          path: "$participants",
+        },
+      },
+      {
+        $project: {
+          id: 1,
+          name: 1,
+          email: 1,
+          punctetotal: "$participants.punctetotal",
+          scorjocuri: "$participants.scorjocuri",
+          procent: "$participants.procent",
+          licitari: "$participants.licitari",
+        },
+      },
+      {
+        $addFields: {
+          sort1: {
+            $cond: {
+              if: { $eq: [type, "whist"] }, // Check if type is 'whist'
+              then: "$procent", // Use 'procent' for 'whist'
+              else: "$scorjocuri", // Use 'scorjocuri' otherwise
+            },
+          },
+          sort2: {
+            $cond: {
+              if: { $eq: [type, "whist"] }, // Check if type is 'whist'
+              then: "$licitari", // Use 'licitari' for 'whist'
+              else: "$procent", // Use 'procent' otherwise
+            },
+          },
+        },
+      },
+      {
+        $sort: {
+          punctetotal: -1, // Always sort by 'punctetotal' first
+          sort1: -1, // Conditionally sort by either 'procent' or 'scorjocuri'
+          sort2: -1, // Conditionally sort by either 'licitari' or 'procent'
+        },
+      },
+    ]);
+
+    await createMatches(
+      type,
+      participantsNumber,
+      playersPerTable,
+      MatchesType,
+      participants
     );
-    return NextResponse.json({ round, isFinalRound });
-  }
 
-  // All scores submitted, start the next round
-  round++;
-  await VerificationsType.updateOne({ stop: true }, { round, timer: null });
-
-  MatchesType = Matches[`Meciuri_live_${type}_${round}`];
-  const ParticipantType = Participants[`Participanti_live_${type}`];
-  let participantsNumber = await ParticipantType.countDocuments();
-
-  if (type === "whist") {
-    participantsNumber = 12;
-  }
-  const playersPerTable = "6";
-
-  const participants = await ParticipantType.aggregate([
-    {
-      $lookup: {
-        from: `clasament_live_${type}`,
-        localField: "id",
-        foreignField: "id",
-        as: "participants",
-      },
-    },
-    {
-      $unwind: {
-        path: "$participants",
-      },
-    },
-    {
-      $project: {
-        id: 1,
-        name: 1,
-        email: 1,
-        punctetotal: "$participants.punctetotal",
-        scorjocuri: "$participants.scorjocuri",
-        procent: "$participants.procent",
-        licitari: "$participants.licitari",
-      },
-    },
-    {
-      $addFields: {
-        sort1: {
-          $cond: {
-            if: { $eq: [type, "whist"] }, // Check if type is 'whist'
-            then: "$procent", // Use 'procent' for 'whist'
-            else: "$scorjocuri", // Use 'scorjocuri' otherwise
-          },
-        },
-        sort2: {
-          $cond: {
-            if: { $eq: [type, "whist"] }, // Check if type is 'whist'
-            then: "$licitari", // Use 'licitari' for 'whist'
-            else: "$procent", // Use 'procent' otherwise
-          },
-        },
-      },
-    },
-    {
-      $sort: {
-        punctetotal: -1, // Always sort by 'punctetotal' first
-        sort1: -1, // Conditionally sort by either 'procent' or 'scorjocuri'
-        sort2: -1, // Conditionally sort by either 'licitari' or 'procent'
-      },
-    },
-  ]);
-
-  await createMatches(
-    type,
-    participantsNumber,
-    playersPerTable,
-    MatchesType,
+    // Send emails to all participants
     participants
-  );
+      .filter((participant) => participant.email)
+      .forEach(async (participant) => {
+        if (await isSubscribed(participant.email)) {
+          await transporter.sendMail({
+            from: process.env.EMAIL_FROM,
+            to: participant.email,
+            subject: `Concurs ${type}`,
+            text: `Start runda ${round} ${footerText(participant.email)}`,
+            html: `<h1>Start runda ${round}</h1> ${footerHtml(
+              participant.email
+            )}`,
+          });
+        }
+      });
 
-  // Send emails to all participants
-  participants
-    .filter((participant) => participant.email)
-    .forEach(async (participant) => {
-      if (await isSubscribed(participant.email)) {
-        await transporter.sendMail({
-          from: process.env.EMAIL_FROM,
-          to: participant.email,
-          subject: `Concurs ${type}`,
-          text: `Start runda ${round} ${footerText(participant.email)}`,
-          html: `<h1>Start runda ${round}</h1> ${footerHtml(
-            participant.email
-          )}`,
-        });
-      }
-    });
-
-  return NextResponse.json({ round, isFinalRound });
+    return NextResponse.json({ round, isFinalRound });
+  } catch (error) {
+    console.error("Error in API route:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
 }
