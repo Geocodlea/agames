@@ -17,10 +17,6 @@ import { createMatches } from "@/utils/createMatches";
 export async function GET(request, { params }) {
   const [type, eventID] = params.type;
 
-  // You can extract specific information like user-agent
-  const userAgent = request.headers.get("User-Agent");
-  console.log("User-Agent:", userAgent);
-
   await dbConnect();
   const event = await Event.findOne({ _id: eventID });
 
