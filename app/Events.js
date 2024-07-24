@@ -69,22 +69,18 @@ const Events = () => {
             <Skeleton variant="rounded" animation="wave" height={300} />
             <Skeleton
               variant="rectangular"
-              height={120}
+              height={100}
               sx={{ bgcolor: "grey.200" }}
             />
             <Skeleton
               variant="rounded"
               animation="wave"
-              height={45}
-              width={96}
+              height={36}
+              width={83}
               sx={{ margin: "auto" }}
             />
+            <Skeleton sx={{ fontSize: "2rem", margin: "10px 20%" }} />
             <Skeleton
-              variant="text"
-              sx={{ fontSize: "2rem", margin: "10px 20%" }}
-            />
-            <Skeleton
-              variant="text"
               sx={{ fontSize: "2rem", marginLeft: "30%", marginRight: "30%" }}
             />
           </Paper>

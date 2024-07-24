@@ -38,6 +38,10 @@ const LeaderboardTable = async () => {
   return (
     <Box mb={8} mt={8} sx={{ width: "100%", maxWidth: "800px" }}>
       <Typography variant="h2">Leaderboard</Typography>
+      <Typography>
+        Suma punctajelor obținute în functie de locul din clasament: L1 - 100p,
+        L2 - 70p, L3 - 50p, L4 - 35p, L5 - 25p
+      </Typography>
       <EditableDataGrid
         columnsData={columnsData}
         rowsData={filteredLeaderboard}
