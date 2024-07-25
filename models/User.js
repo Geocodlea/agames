@@ -11,6 +11,7 @@ global.models.User =
     emailVerified: { type: Date },
     role: { type: String },
     tel: { type: String },
+    obs: { type: String },
     lastActive: { type: Date },
     unsubscribed: { type: Boolean },
   });

@@ -4,6 +4,7 @@ import * as Participants from "@/models/Participants";
 import * as Matches from "/models/Matches";
 import * as Clasament from "/models/Clasament";
 import * as Verifications from "@/models/Verifications";
+import User from "/models/User";
 
 export async function GET(request, { params }) {
   const [type] = params.type;
@@ -65,6 +66,7 @@ export async function PUT(request, { params }) {
 
   await dbConnect();
   await ParticipantType.updateOne({ id }, data);
+  await User.updateOne({ _id: id }, { obs: data.obs });
 
   if (round !== "0") {
     const MatchesType = Matches[`Meciuri_live_${type}_${round}`];

@@ -20,7 +20,9 @@ export default async function Admin() {
   const filteredUsers = users.map((user) => ({
     id: user.id,
     name: user.name,
+    tel: user.tel,
     email: user.email,
+    obs: user.obs,
     role: user.role,
   }));
 
@@ -42,8 +44,20 @@ export default async function Admin() {
       flex: 1,
     },
     {
+      field: "tel",
+      headerName: "Telefon",
+      editable: true,
+      width: 100,
+    },
+    {
       field: "email",
       headerName: "Email",
+      editable: true,
+      width: 200,
+    },
+    {
+      field: "obs",
+      headerName: "Obs",
       editable: true,
       width: 200,
     },
