@@ -40,7 +40,7 @@ const OldEventsTable = () => {
   }, []);
 
   const filteredOldEvents = oldEvents.map((event) => {
-    const isCurrentMonth = event.name.includes("06.2024");
+    const isCurrentMonth = event.name.includes("07.2024");
     if (isCurrentMonth) {
       cost = event.participants * 3;
       total += cost;
