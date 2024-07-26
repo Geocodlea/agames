@@ -96,32 +96,31 @@ const StartButtons = ({ type, loading, round, start, timer }) => {
   }
 };
 
-const ResetButton = ({ loading, round, isFinalRound, reset }) => (
-  <Box>
-    {round === 0 && (
-      <Typography align="center" gutterBottom>
-        Șterge jucătorii înscriși
-      </Typography>
-    )}
-    {isFinalRound && (
+const ResetButton = ({ loading, round, isFinalRound, reset }) =>
+  // {
+  //   /* {round === 0 && (
+  //     <Typography align="center" gutterBottom>
+  //       Șterge jucătorii înscriși
+  //     </Typography>
+  //   )} */
+  // }
+  isFinalRound && (
+    <div>
       <Typography align="center" gutterBottom>
         Șterge și introduce eveniment în evenimente anterioare, introduce
         jucători în leaderboard
       </Typography>
-    )}
 
-    {(round === 0 || isFinalRound) && (
       <LoadingButton
         loading={loading}
-        loadingIndicator="Reset..."
+        loadingIndicator="Resetare..."
         variant="contained"
         className="btn btn-error"
         onClick={reset}
       >
         Reset
       </LoadingButton>
-    )}
-  </Box>
-);
+    </div>
+  );
 
 export { StartButtons, ResetButton };
