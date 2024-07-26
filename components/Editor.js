@@ -51,6 +51,7 @@ const Editor = ({ saveData, initialData, tab }) => {
 
       shouldNotGroupWhenFull: true,
     },
+
     plugins: [
       Heading,
       Essentials,
@@ -62,6 +63,10 @@ const Editor = ({ saveData, initialData, tab }) => {
       Table,
       Undo,
     ],
+
+    link: {
+      addTargetToExternalLinks: true,
+    },
   };
 
   return (
