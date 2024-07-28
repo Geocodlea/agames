@@ -133,7 +133,8 @@ const CreateEventForm = () => {
               { value: "catan", label: "Catan" },
               { value: "whist", label: "Whist" },
               { value: "rentz", label: "Rentz" },
-              { value: "cavaleri", label: "Cavaleri" },
+              { value: "cavaleri", label: "Catan - Orașe și Cavaleri" },
+              { value: "general", label: "General" },
             ]}
           />
 

@@ -126,7 +126,7 @@ export default function EventPage({ params }) {
   if (!eventStarted) {
     tabs.push({
       label: "Inscriere",
-      content: <Register session={session} type={type} />,
+      content: <Register session={session} type={type} eventID={id} />,
     });
   }
 
@@ -135,8 +135,13 @@ export default function EventPage({ params }) {
       label: "Participanti",
       content: (
         <Stack spacing={4}>
-          <Participants type={type} round={round} isAdmin={isAdmin} />
-          {isAdmin && <Amical type={type} />}
+          <Participants
+            type={type}
+            round={round}
+            isAdmin={isAdmin}
+            eventID={id}
+          />
+          {isAdmin && type !== "general" && <Amical type={type} />}
         </Stack>
       ),
     });
@@ -172,7 +177,7 @@ export default function EventPage({ params }) {
     );
   }
 
-  if (isAdmin) {
+  if (isAdmin && type !== "general") {
     tabs.push({
       label: "Admin",
       content: (

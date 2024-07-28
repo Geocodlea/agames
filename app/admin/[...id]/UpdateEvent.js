@@ -133,6 +133,8 @@ const UpdateEvent = ({ params }) => {
               { value: "catan", label: "Catan" },
               { value: "whist", label: "Whist" },
               { value: "rentz", label: "Rentz" },
+              { value: "cavaleri", label: "Catan - Orașe și Cavaleri" },
+              { value: "general", label: "General" },
             ]}
           />
 

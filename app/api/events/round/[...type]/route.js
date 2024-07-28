@@ -17,6 +17,8 @@ import { createMatches } from "@/utils/createMatches";
 export async function GET(request, { params }) {
   const [type, eventID] = params.type;
 
+  if (type === "general") return NextResponse.json({ round: 0 });
+
   await dbConnect();
   const event = await Event.findOne({ _id: eventID });
 

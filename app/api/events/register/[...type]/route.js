@@ -3,6 +3,9 @@ import { NextResponse } from "next/server";
 import * as Participants from "@/models/Participants";
 import * as Verifications from "@/models/Verifications";
 
+import mongoose from "mongoose";
+import { createParticipantsModel } from "@/utils/createModels";
+
 import {
   isSubscribed,
   transporter,
@@ -11,7 +14,7 @@ import {
 } from "/utils/emailHelpers";
 
 export async function POST(request, { params }) {
-  const [type] = params.type;
+  const [type, eventID] = params.type;
   const session = await request.json();
 
   if (Object.keys(session).length === 0) {
@@ -23,6 +26,15 @@ export async function POST(request, { params }) {
       success: false,
       message: "Numele este obligatoriu",
     });
+  }
+
+  if (type === "general") {
+    await createParticipantsModel(eventID);
+    const Participants = mongoose.models[`Participanti_live_${eventID}`];
+    const participant = new Participants(session.user);
+    await participant.save();
+
+    return NextResponse.json({ success: true });
   }
 
   const ParticipantType = Participants[`Participanti_live_${type}`];
@@ -81,11 +93,19 @@ export async function POST(request, { params }) {
 }
 
 export async function DELETE(request, { params }) {
-  const [type] = params.type;
+  const [type, eventID] = params.type;
   const user = await request.json();
 
   if (Object.keys(user).length === 0) {
     return NextResponse.json({ success: false, message: "Nu ești logat" });
+  }
+
+  if (type === "general") {
+    await createParticipantsModel(eventID);
+    const Participants = mongoose.models[`Participanti_live_${eventID}`];
+    await Participants.deleteOne({ id: user.id });
+
+    return NextResponse.json({ success: true });
   }
 
   const ParticipantType = Participants[`Participanti_live_${type}`];

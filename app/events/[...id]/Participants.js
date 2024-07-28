@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import EditableDataGrid from "@/components/EditableDataGrid";
 import { Typography } from "@mui/material";
 
-export default function Participanti({ type, round, isAdmin }) {
+export default function Participanti({ type, round, isAdmin, eventID }) {
   const [participants, setParticipants] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetch(`/api/events/participants/${type}`);
+      const data = await fetch(`/api/events/participants/${type}/${eventID}`);
       setParticipants(await data.json());
     };
 
@@ -74,7 +74,7 @@ export default function Participanti({ type, round, isAdmin }) {
         density={"compact"}
         showActions={isAdmin}
         showAddRecord={isAdmin}
-        apiURL={`/events/participants/${type}/${round}`}
+        apiURL={`/events/participants/${type}/${round}/${eventID}`}
         alertText={"participant"}
         disableColumnMenu={true}
       />

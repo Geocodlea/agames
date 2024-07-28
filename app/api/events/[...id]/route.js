@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from "uuid";
 import { Storage } from "@google-cloud/storage";
 import { NextResponse } from "next/server";
 
+import mongoose from "mongoose";
+
 // Set up Google Cloud Storage client
 const storage = new Storage({
   projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
@@ -49,12 +51,14 @@ export async function PATCH(request, { params }) {
   await dbConnect();
 
   // Check if the event type already exists
-  const events = await Event.find({ type: data.type });
-  if (events.length) {
-    return NextResponse.json({
-      success: false,
-      message: `Este deja un eveniment de ${data.type}`,
-    });
+  if (data.type !== "general") {
+    const events = await Event.find({ type: data.type });
+    if (events.length) {
+      return NextResponse.json({
+        success: false,
+        message: `Este deja un eveniment de ${data.type}`,
+      });
+    }
   }
 
   if (data.image) {
@@ -110,6 +114,11 @@ export async function DELETE(request, { params }) {
   );
 
   await Event.deleteOne({ _id: id });
+
+  const Participants = mongoose.connection.db.collection(
+    `participanti_live_${id}`
+  );
+  await Participants.drop();
 
   return NextResponse.json({ success: true });
 }
