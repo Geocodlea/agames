@@ -14,6 +14,19 @@ import {
   footerHtml,
 } from "/utils/emailHelpers";
 
+export async function GET(request, { params }) {
+  const [type, eventID, id] = params.type;
+
+  const modelName = type === "general" ? eventID : type;
+  await createParticipantsModel(modelName);
+  const Participants = mongoose.models[`Participanti_live_${modelName}`];
+
+  await dbConnect();
+  const isRegistered = await Participants.exists({ id });
+
+  return NextResponse.json(isRegistered ? true : false);
+}
+
 export async function POST(request, { params }) {
   const [type, eventID] = params.type;
   const session = await request.json();

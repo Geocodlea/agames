@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "@/app/page.module.css";
 import { Box, Button, Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -13,10 +13,23 @@ import { getEventDates } from "@/utils/helpers";
 export default function Register({ session, type, eventID, eventDate }) {
   const [alert, setAlert] = useState({ text: "", severity: "" });
   const [loading, setLoading] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
   const typeName =
     type === "cavaleri"
       ? "Catan - Orașe și Cavaleri"
       : type.charAt(0).toUpperCase() + type.slice(1);
+
+  useEffect(() => {
+    const getIsRegistered = async () => {
+      const response = await fetch(
+        `/api/events/register/${type}/${eventID}/${session?.user.id}`
+      );
+      const data = await response.json();
+      setIsRegistered(data);
+    };
+
+    getIsRegistered();
+  }, []);
 
   const register = async () => {
     setLoading(true);
@@ -42,6 +55,7 @@ export default function Register({ session, type, eventID, eventDate }) {
         text: `Te-ai înscris cu succes`,
         severity: "success",
       });
+      setIsRegistered(true);
     } catch (error) {
       setAlert({ text: `${error}`, severity: "error" });
     }
@@ -69,6 +83,7 @@ export default function Register({ session, type, eventID, eventDate }) {
         text: `Ai anulat înscrierea cu succes`,
         severity: "success",
       });
+      setIsRegistered(false);
     } catch (error) {
       setAlert({ text: `${error}`, severity: "error" });
     }
@@ -76,50 +91,52 @@ export default function Register({ session, type, eventID, eventDate }) {
 
   return (
     <Box className={styles.grid}>
-      <Box>
-        {session ? (
-          session?.user.name ? (
-            <Typography variant="body1" gutterBottom>
-              Înscrie-te la Seara de {typeName}, folosind butonul de mai jos:
-            </Typography>
+      {!isRegistered ? (
+        <div>
+          {session ? (
+            session?.user.name ? (
+              <Typography variant="body1" gutterBottom>
+                Înscrie-te la Seara de {typeName}, folosind butonul de mai jos:
+              </Typography>
+            ) : (
+              <Typography variant="body1" gutterBottom>
+                Pentru a te înscrie la Seara de {typeName} trebuie să ai definit
+                un nume în secțiunea <Link href="/profile">profil</Link>
+              </Typography>
+            )
           ) : (
             <Typography variant="body1" gutterBottom>
-              Pentru a te înscrie la Seara de {typeName} trebuie să ai definit
-              un nume în secțiunea <Link href="/profile">profil</Link>
+              Pentru a te înscrie la Seara de {typeName} trebuie ca mai întâi să
+              fii <Link href="/api/auth/signin">logat</Link>
             </Typography>
-          )
-        ) : (
-          <Typography variant="body1" gutterBottom>
-            Pentru a te înscrie la Seara de {typeName} trebuie ca mai întâi să
-            fii <Link href="/api/auth/signin">logat</Link>
+          )}
+          <LoadingButton
+            loading={loading}
+            loadingIndicator="Înscriere..."
+            variant="contained"
+            className="btn btn-primary"
+            onClick={register}
+          >
+            Înscriere
+          </LoadingButton>
+        </div>
+      ) : (
+        <div>
+          <Typography gutterBottom>
+            Te rugăm să folosești această opțiune dacă dorești să îți anulezi
+            participarea:
           </Typography>
-        )}
-        <LoadingButton
-          loading={loading}
-          loadingIndicator="Înscriere..."
-          variant="contained"
-          className="btn btn-primary"
-          onClick={register}
-        >
-          Înscriere
-        </LoadingButton>
-      </Box>
+          <Button
+            variant="contained"
+            className="btn btn-primary"
+            onClick={unregister}
+          >
+            Anulează înscriere
+          </Button>
+        </div>
+      )}
 
-      <Box>
-        <Typography gutterBottom>
-          Te rugăm să folosești această opțiune atunci când dorești să îți
-          anulezi participarea:
-        </Typography>
-        <Button
-          variant="contained"
-          className="btn btn-primary"
-          onClick={unregister}
-        >
-          Anulează înscriere
-        </Button>
-      </Box>
-
-      <Box>
+      <div>
         <Typography gutterBottom>
           Dacă dorești să-ți salvezi data evenimentului în calendar, click mai
           jos:
@@ -137,7 +154,7 @@ export default function Register({ session, type, eventID, eventDate }) {
         >
           Calendar
         </AddToCalendarButton>
-      </Box>
+      </div>
       <AlertMsg alert={alert} />
     </Box>
   );
