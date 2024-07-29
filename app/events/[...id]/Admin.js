@@ -122,7 +122,6 @@ export default function Admin({ type, round, isFinalRound, eventID }) {
       />
       <ResetButton
         loading={loadingReset}
-        round={round}
         isFinalRound={isFinalRound}
         reset={reset}
       />

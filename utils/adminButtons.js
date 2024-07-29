@@ -96,14 +96,7 @@ const StartButtons = ({ type, loading, round, start, timer }) => {
   }
 };
 
-const ResetButton = ({ loading, round, isFinalRound, reset }) =>
-  // {
-  //   /* {round === 0 && (
-  //     <Typography align="center" gutterBottom>
-  //       Șterge jucătorii înscriși
-  //     </Typography>
-  //   )} */
-  // }
+const ResetButton = ({ loading, isFinalRound, reset }) =>
   isFinalRound && (
     <div>
       <Typography align="center" gutterBottom>
