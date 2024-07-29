@@ -83,30 +83,46 @@ const formatedDate = (date) => {
   });
 };
 
-const getNextMonday = (date) => {
-  const day = date.getUTCDay();
-  const nextMonday = new Date(date);
-  nextMonday.setUTCDate(date.getUTCDate() + ((8 - day) % 7));
-  nextMonday.setUTCHours(0, 0, 0, 0);
-  return nextMonday;
+const calendarFormatedDate = (dateStr) => {
+  // Create a Date object from the input date string
+  const date = new Date(dateStr);
+
+  // Get the year, month, and day
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-indexed, so add 1
+  const day = String(date.getDate()).padStart(2, "0");
+
+  // Construct the date string in YYYY-MM-DD format
+  return `${year}-${month}-${day}`;
 };
 
-const getEventDates = (type, date) => {
+const getNextEventDay = (date) => {
+  const day = date.getUTCDay();
+  const nextEventDay = new Date(date);
+  nextEventDay.setUTCDate(date.getUTCDate() + ((8 - day) % 7));
+  nextEventDay.setUTCHours(0, 0, 0, 0);
+  return nextEventDay;
+};
+
+const getEventDates = (type, date, calendar) => {
   const dbDate = new Date(date);
   const today = new Date();
   today.setUTCHours(0, 0, 0, 0);
 
   // If the date is in the future, return the formatted date
   if (dbDate >= today) {
+    if (calendar) {
+      return calendarFormatedDate(dbDate);
+    }
     return formatedDate(dbDate);
   }
 
-  // Calculate the first Monday from today
-  let firstMonday = getNextMonday(today);
+  // Calculate the first EventDay from today
+  let firstEventDay = getNextEventDay(today);
 
-  // If today is a Monday, consider today as the starting point
+  // If today is an EventDay, consider today as the starting point
   if (today.getUTCDay() === 1) {
-    firstMonday = today;
+    firstEventDay = today;
   }
 
   // Reference date (a known "every other date")
@@ -124,26 +140,31 @@ const getEventDates = (type, date) => {
   // Ensure reference date has the correct time (midnight UTC)
   referenceDate.setUTCHours(0, 0, 0, 0);
 
-  // Calculate the number of days between the reference date and the first Monday
+  // Calculate the number of days between the reference date and the first EventDay
   const daysDifference = Math.floor(
-    (firstMonday - referenceDate) / (1000 * 60 * 60 * 24)
+    (firstEventDay - referenceDate) / (1000 * 60 * 60 * 24)
   );
 
-  // Calculate the number of 14-day periods between the reference date and the first Monday
+  // Calculate the number of 14-day periods between the reference date and the first EventDay
   const periods = Math.ceil(daysDifference / 14);
 
-  // Calculate the closest "every other Monday" from the reference date
-  const closestEveryOtherMonday = new Date(referenceDate);
-  closestEveryOtherMonday.setUTCDate(referenceDate.getUTCDate() + periods * 14);
+  // Calculate the closest "every other EventDay" from the reference date
+  const closestEveryOtherEventDay = new Date(referenceDate);
+  closestEveryOtherEventDay.setUTCDate(
+    referenceDate.getUTCDate() + periods * 14
+  );
 
-  // Ensure the closest "every other Monday" is in the future
-  if (closestEveryOtherMonday <= today) {
-    closestEveryOtherMonday.setUTCDate(
-      closestEveryOtherMonday.getUTCDate() + 14
+  // Ensure the closest "every other EventDay" is in the future
+  if (closestEveryOtherEventDay <= today) {
+    closestEveryOtherEventDay.setUTCDate(
+      closestEveryOtherEventDay.getUTCDate() + 14
     );
   }
 
-  return formatedDate(closestEveryOtherMonday);
+  if (calendar) {
+    return calendarFormatedDate(closestEveryOtherEventDay);
+  }
+  return formatedDate(closestEveryOtherEventDay);
 };
 
 export {

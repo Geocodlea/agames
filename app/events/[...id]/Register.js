@@ -8,8 +8,9 @@ import Link from "next/link";
 
 import { AddToCalendarButton } from "add-to-calendar-button-react";
 import AlertMsg from "@/components/AlertMsg";
+import { getEventDates } from "@/utils/helpers";
 
-export default function Register({ session, type, eventID }) {
+export default function Register({ session, type, eventID, eventDate }) {
   const [alert, setAlert] = useState({ text: "", severity: "" });
   const [loading, setLoading] = useState(false);
   const typeName =
@@ -128,8 +129,8 @@ export default function Register({ session, type, eventID }) {
           name={type}
           options={["Apple", "Google", "iCal"]}
           location="AGames"
-          startDate="2024-05-05"
-          endDate="2024-05-05"
+          startDate={getEventDates(type, eventDate, true)}
+          endDate={getEventDates(type, eventDate, true)}
           startTime="19:15"
           endTime="23:00"
           timeZone="Europe/Bucharest"

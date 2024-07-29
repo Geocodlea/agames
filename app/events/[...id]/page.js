@@ -126,7 +126,14 @@ export default function EventPage({ params }) {
   if (!eventStarted) {
     tabs.push({
       label: "Inscriere",
-      content: <Register session={session} type={type} eventID={id} />,
+      content: (
+        <Register
+          session={session}
+          type={type}
+          eventID={id}
+          eventDate={event.date}
+        />
+      ),
     });
   }
 

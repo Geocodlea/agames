@@ -1,10 +1,11 @@
 import dbConnect from "/utils/dbConnect";
 import { NextResponse } from "next/server";
-import * as Participants from "@/models/Participants";
-import * as Verifications from "@/models/Verifications";
 
 import mongoose from "mongoose";
-import { createParticipantsModel } from "@/utils/createModels";
+import {
+  createParticipantsModel,
+  createVerificationsModel,
+} from "@/utils/createModels";
 
 import {
   isSubscribed,
@@ -28,20 +29,14 @@ export async function POST(request, { params }) {
     });
   }
 
-  if (type === "general") {
-    await createParticipantsModel(eventID);
-    const Participants = mongoose.models[`Participanti_live_${eventID}`];
-    const participant = new Participants(session.user);
-    await participant.save();
-
-    return NextResponse.json({ success: true });
-  }
-
-  const ParticipantType = Participants[`Participanti_live_${type}`];
-  const VerificationsType = Verifications[`Verificari_live_${type}`];
+  const modelName = type === "general" ? eventID : type;
+  await createParticipantsModel(modelName);
+  await createVerificationsModel(modelName);
+  const Participants = mongoose.models[`Participanti_live_${modelName}`];
+  const Verifications = mongoose.models[`Verificari_live_${modelName}`];
 
   await dbConnect();
-  const eventStarted = await VerificationsType.findOne({
+  const eventStarted = await Verifications.findOne({
     round: { $gt: 0 },
   });
   if (eventStarted) {
@@ -51,7 +46,7 @@ export async function POST(request, { params }) {
     });
   }
 
-  const registeredParticipant = await ParticipantType.findOne({
+  const registeredParticipant = await Participants.findOne({
     id: session.user.id,
   });
 
@@ -59,7 +54,7 @@ export async function POST(request, { params }) {
     return NextResponse.json({ success: false, message: "Ești deja înscris" });
   }
 
-  const participant = new ParticipantType(session.user);
+  const participant = new Participants(session.user);
   await participant.save();
 
   if (await isSubscribed(session.user.email)) {
@@ -100,26 +95,20 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ success: false, message: "Nu ești logat" });
   }
 
-  if (type === "general") {
-    await createParticipantsModel(eventID);
-    const Participants = mongoose.models[`Participanti_live_${eventID}`];
-    await Participants.deleteOne({ id: user.id });
-
-    return NextResponse.json({ success: true });
-  }
-
-  const ParticipantType = Participants[`Participanti_live_${type}`];
+  const modelName = type === "general" ? eventID : type;
+  await createParticipantsModel(modelName);
+  const Participants = mongoose.models[`Participanti_live_${modelName}`];
 
   await dbConnect();
 
-  const registeredParticipant = await ParticipantType.findOne({
+  const registeredParticipant = await Participants.findOne({
     id: user.id,
   });
   if (!registeredParticipant) {
     return NextResponse.json({ success: false, message: "Nu ești înscris" });
   }
 
-  await ParticipantType.deleteOne({ id: user.id });
+  await Participants.deleteOne({ id: user.id });
 
   return NextResponse.json({ success: true });
 }
