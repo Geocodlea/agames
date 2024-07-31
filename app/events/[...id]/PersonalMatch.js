@@ -44,6 +44,7 @@ export default function PersonalMatch({
   isAdmin,
   userID,
   eventID,
+  updatePersonalMatch,
 }) {
   const [participants, setParticipants] = useState([]);
   const [alert, setAlert] = useState({ text: "", severity: "" });
@@ -56,6 +57,7 @@ export default function PersonalMatch({
       );
       const result = await data.json();
 
+      updatePersonalMatch(result.length ? true : false);
       setParticipants(result);
       setLoading(false);
     };
@@ -151,77 +153,67 @@ export default function PersonalMatch({
 
   return (
     <Box sx={{ margin: "auto", maxWidth: "800px" }}>
-      {participants.length ? (
-        <>
-          <Typography variant="h2">
-            Masa {participants[0]?.table} - Runda {round}
-          </Typography>
-          <EditableDataGrid
-            columnsData={columnsData}
-            rowsData={participants}
-            pageSize={10}
-            apiURL={`/events/matches/${type}/${round}/${host}/${isAdmin}/${null}`}
-            alertText={"score"}
-            disableColumnMenu={true}
-            hideSearch={true}
-            hideFooter={true}
-            hiddenColumn={"table"}
-          />
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={onSubmit}
-          >
-            {({ isSubmitting }) => (
-              <Form style={{ margin: "1rem 0" }}>
-                <Field
-                  name="image"
-                  component={CustomFileUpload}
-                  label="Image"
-                  type="file"
-                  accept="image/*"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
+      <Typography variant="h2">
+        Masa {participants[0]?.table} - Runda {round}
+      </Typography>
+      <EditableDataGrid
+        columnsData={columnsData}
+        rowsData={participants}
+        pageSize={10}
+        apiURL={`/events/matches/${type}/${round}/${host}/${isAdmin}/${null}`}
+        alertText={"score"}
+        disableColumnMenu={true}
+        hideSearch={true}
+        hideFooter={true}
+        hiddenColumn={"table"}
+      />
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+      >
+        {({ isSubmitting }) => (
+          <Form style={{ margin: "1rem 0" }}>
+            <Field
+              name="image"
+              component={CustomFileUpload}
+              label="Image"
+              type="file"
+              accept="image/*"
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
 
-                <Box
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
-                >
-                  <LoadingButton
-                    type="submit"
-                    loading={isSubmitting}
-                    loadingIndicator="Uploading..."
-                    variant="contained"
-                    className="btn btn-primary"
-                    sx={{ marginTop: "12px", marginBottom: "20px" }}
-                  >
-                    Upload image
-                  </LoadingButton>
-                  <AlertMsg alert={alert} />
-                </Box>
-              </Form>
-            )}
-          </Formik>
-          <Typography variant="body1" gutterBottom>
-            Rugăm primul jucător afișat la această masă să introducă mai sus, la
-            finalul meciului, rezultatele tuturor de la masa sa și să încarce o
-            poză cu masa de joc, de unde să reiasă punctajele. Ceilalți, vă
-            rugăm să verificați în secțiunea Meciuri și Clasament corectitudinea
-            informațiilor afișate. Secțiunile Meciuri și Clasament se
-            actualizează automat la fiecare 30 sec.
-          </Typography>
-        </>
-      ) : (
-        <Typography variant="body1" gutterBottom>
-          Salutare, în prezent este deja activ un eveniment. Îi poți urmări
-          desfășurarea la celelalte secțiuni ale acestui meniu :) Înscrierile
-          pentru următorul eveniment vor fi disponibile în maxim 2 zile.
-        </Typography>
-      )}
+            <Box
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <LoadingButton
+                type="submit"
+                loading={isSubmitting}
+                loadingIndicator="Uploading..."
+                variant="contained"
+                className="btn btn-primary"
+                sx={{ marginTop: "12px", marginBottom: "20px" }}
+              >
+                Upload image
+              </LoadingButton>
+              <AlertMsg alert={alert} />
+            </Box>
+          </Form>
+        )}
+      </Formik>
+      <Typography variant="body1" gutterBottom>
+        Rugăm primul jucător afișat la această masă să introducă mai sus, la
+        finalul meciului, rezultatele tuturor de la masa sa și să încarce o poză
+        cu masa de joc, de unde să reiasă punctajele. Ceilalți, vă rugăm să
+        verificați în secțiunea Meciuri și Clasament corectitudinea
+        informațiilor afișate. Secțiunile Meciuri și Clasament se actualizează
+        automat la fiecare 30 sec.
+      </Typography>
     </Box>
   );
 }

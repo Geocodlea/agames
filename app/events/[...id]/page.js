@@ -18,7 +18,6 @@ import Admin from "./Admin";
 import PersonalMatch from "./PersonalMatch";
 import Matches from "./Matches";
 import Ranking from "./Ranking";
-
 import Loading from "./loading";
 
 export default function EventPage({ params }) {
@@ -30,6 +29,7 @@ export default function EventPage({ params }) {
   const [eventStarted, setEventStarted] = useState(false);
   const [alert, setAlert] = useState({ text: "", severity: "" });
   const [loading, setLoading] = useState(true);
+  const [isPersonalMatch, setIsPersonalMatch] = useState(true);
   const isAdmin = session?.user.role === "admin";
   const router = useRouter();
 
@@ -46,6 +46,7 @@ export default function EventPage({ params }) {
 
       setRound(data.round);
       setIsFinalRound(data.isFinalRound);
+      data.round === 0 ? setEventStarted(false) : setEventStarted(true);
     };
 
     getRound();
@@ -67,10 +68,6 @@ export default function EventPage({ params }) {
 
     getEvent();
   }, []);
-
-  useEffect(() => {
-    round === 0 ? setEventStarted(false) : setEventStarted(true);
-  }, [round, event, isAdmin]);
 
   if (loading) {
     return <Loading />;
@@ -154,21 +151,28 @@ export default function EventPage({ params }) {
     });
   }
 
+  const updatePersonalMatch = (result) => {
+    setIsPersonalMatch(result);
+  };
+  if (eventStarted && isPersonalMatch) {
+    tabs.push({
+      label: "Meci Propriu",
+      content: (
+        <PersonalMatch
+          type={type}
+          round={round}
+          host={session?.user.name}
+          isAdmin={isAdmin}
+          userID={session?.user.id}
+          eventID={id}
+          updatePersonalMatch={updatePersonalMatch}
+        />
+      ),
+    });
+  }
+
   if (eventStarted) {
     tabs.push(
-      {
-        label: "Meci Propriu",
-        content: (
-          <PersonalMatch
-            type={type}
-            round={round}
-            host={session?.user.name}
-            isAdmin={isAdmin}
-            userID={session?.user.id}
-            eventID={id}
-          />
-        ),
-      },
       {
         label: "Meciuri",
         content: (
