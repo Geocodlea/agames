@@ -200,7 +200,7 @@ export default function EventPage({ params }) {
 
   return (
     <div className="editorContent">
-      <Tabs tabContents={tabs} />
+      <Tabs tabContents={tabs} round={round} />
       <AlertMsg alert={alert} />
     </div>
   );

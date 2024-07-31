@@ -1,14 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 
-function CustomTabPanel(props) {
-  const { children, value, index, ...other } = props;
-
+function CustomTabPanel({ children, value, index, ...other }) {
   return (
     <div
       role="tabpanel"
@@ -39,39 +37,42 @@ function tabsProps(index) {
   };
 }
 
-export default function CustomTabs({ tabContents }) {
-  const [value, setValue] = useState(0);
+export default function CustomTabs({ tabContents, round }) {
+  const initialValue = round === 0 ? 3 : 4;
+  const [value, setValue] = useState(initialValue);
+
+  useEffect(() => {
+    setValue(initialValue);
+  }, [round]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Box
+    <div>
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        variant="scrollable"
+        scrollButtons
+        allowScrollButtonsMobile
+        aria-label="event tabs"
         sx={{
           borderBottom: 1,
           borderColor: "divider",
         }}
       >
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons
-          allowScrollButtonsMobile
-          aria-label="event tabs"
-        >
-          {tabContents.map((tab, i) => (
-            <Tab label={tab.label} {...tabsProps(i)} key={i} />
-          ))}
-        </Tabs>
-      </Box>
+        {tabContents.map((tab, i) => (
+          <Tab label={tab.label} {...tabsProps(i)} key={i} />
+        ))}
+      </Tabs>
+
       {tabContents.map((tab, i) => (
         <CustomTabPanel value={value} index={i} key={i}>
           {tab.content}
         </CustomTabPanel>
       ))}
-    </Box>
+    </div>
   );
 }
