@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 
 import { Paper, Typography } from "@mui/material";
 
+import EditEmails from "./EditEmails";
 import CreateEventForm from "./CreateEventForm";
 import EditableDataGrid from "@/components/EditableDataGrid";
 
@@ -71,6 +72,11 @@ export default async function Admin() {
 
   return (
     <>
+      <Paper elevation={24} className="form-paper">
+        <Typography variant="h2">Edit Emails</Typography>
+        <EditEmails />
+      </Paper>
+
       <Paper elevation={24} className="form-paper">
         <Typography variant="h2">Create Event</Typography>
         <CreateEventForm />
