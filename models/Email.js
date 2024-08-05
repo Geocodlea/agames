@@ -6,7 +6,8 @@ global.models.Email =
   global.models.Email ||
   mongoose.model("Email", {
     name: { type: String },
-    text: { type: String },
+    subject: { type: String },
+    body: { type: String },
   });
 
 export default global.models.Email;

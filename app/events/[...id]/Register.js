@@ -39,7 +39,7 @@ export default function Register({ session, type, eventID, eventDate }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ user: session?.user }),
+        body: JSON.stringify({ user: session?.user, typeName }),
       });
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);

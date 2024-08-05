@@ -13,10 +13,10 @@ export async function GET(request, { params }) {
 
 export async function PUT(request, { params }) {
   const { name } = params;
-  const body = await request.json();
+  const data = await request.json();
 
   await dbConnect();
-  await Email.updateOne({ name }, { text: body.data });
+  await Email.updateOne({ name }, { [data.tab]: data.text });
 
   return NextResponse.json({ success: true });
 }

@@ -6,15 +6,16 @@ import { Formik, Form, Field } from "formik";
 import dynamic from "next/dynamic";
 const Editor = dynamic(() => import("@/components/Editor"), { ssr: false });
 
-import { CustomSelect } from "@/utils/formsHelper";
+import { CustomSelect, CustomTextField } from "@/utils/formsHelper";
 import AlertMsg from "/components/AlertMsg";
 
 const initialValues = {
   name: "",
+  subject: "",
 };
 
 const EditEmails = () => {
-  const [emails, setEmails] = useState("");
+  const [emails, setEmails] = useState([]);
   const [alert, setAlert] = useState({ text: "", severity: "" });
 
   const getEmails = async (name) => {
@@ -24,7 +25,7 @@ const EditEmails = () => {
     setEmails(result);
   };
 
-  const saveData = async (data) => {
+  const saveData = async (text, tab) => {
     try {
       const response = await fetch(`/api/emails/${emails.name}`, {
         method: "PUT",
@@ -32,7 +33,8 @@ const EditEmails = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          data,
+          text,
+          tab,
         }),
       });
       if (!response.ok) {
@@ -57,9 +59,9 @@ const EditEmails = () => {
             component={CustomSelect}
             label="Email"
             options={[
-              { value: "register", label: "Inscriere" },
+              { value: "register", label: "Inscriere Eveniment" },
               { value: "start", label: "Start Runda" },
-              { value: "footer", label: "Footer" },
+              { value: "footer", label: "Footer Email" },
             ]}
             onChange={(e) => {
               setFieldValue("name", e.target.value);
@@ -67,7 +69,22 @@ const EditEmails = () => {
             }}
           />
 
-          <Editor saveData={saveData} initialData={emails.text} />
+          <Field
+            name="subject"
+            component={CustomTextField}
+            label="Subject"
+            type="text"
+            placeholder={emails?.subject}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            onBlur={(e) => {
+              setFieldValue("subject", e.target.value);
+              saveData(e.target.value, "subject");
+            }}
+          />
+
+          <Editor saveData={saveData} initialData={emails.body} tab={"body"} />
           <AlertMsg alert={alert} />
         </Form>
       )}

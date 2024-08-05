@@ -8,8 +8,8 @@ import Event from "/models/Event";
 import {
   isSubscribed,
   transporter,
-  footerText,
-  footerHtml,
+  emailFooterText,
+  emailFooterHtml,
 } from "/utils/emailHelpers";
 
 import { createMatches } from "@/utils/createMatches";

@@ -1,7 +1,9 @@
 import dbConnect from "./dbConnect";
 import User from "../models/User";
+import Email from "../models/Email";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
+import { convert } from "html-to-text";
 
 // Middleware function to check subscription status
 const isSubscribed = async (email) => {
@@ -27,25 +29,19 @@ const transporter = nodemailer.createTransport({
 // Create jwt token with user's email
 const token = (email) => jwt.sign({ email }, process.env.NEXTAUTH_SECRET);
 
-const footerText = (email) =>
-  `\n\n Ioana Mocanu \n Creative Board Gaming \n\n e: ioana.mocanu@cbgshop.ro \n t: 0736465213 \n w: www.cbgshop.ro / www.agames.ro \n f: www.facebook.com/CreativeBoardGaming \n\n If you no longer wish to receive emails from us, please unsubscribe, using this link: ${
-    process.env.DEPLOYED_URL
-  }/api/unsubscribe/${token(email)} \n`;
+await dbConnect();
+const emailFooter = await Email.findOne({ name: "footer" });
+const emailFooterHtml = (email) =>
+  emailFooter.body.replace(
+    "{unsubscribe}",
+    `<a href="${process.env.DEPLOYED_URL}/api/unsubscribe/${token(
+      email
+    )}" style="color: #999999; text-decoration: none;">unsubscribe</a>`
+  );
 
-const footerHtml = (email) => `<p>
-  Ioana Mocanu<br>
-  Creative Board Gaming<br><br>
-  e: <a href="mailto:ioana.mocanu@cbgshop.ro">ioana.mocanu@cbgshop.ro</a><br>
-  t: <a href="tel:0736465213">0736465213</a><br>
-  w: <a href="http://www.cbgshop.ro">www.cbgshop.ro</a> / <a href="http://www.agames.ro">www.agames.ro</a><br>
-  f: <a href="http://www.facebook.com/CreativeBoardGaming">www.facebook.com/CreativeBoardGaming</a>
-</p>
-<p>
-  If you no longer wish to receive emails from us, please <a href="${
-    process.env.DEPLOYED_URL
-  }/api/unsubscribe/${token(
-  email
-)}" style="color: #999999; text-decoration: none;">unsubscribe</a>.
-</p>`;
+const emailFooterText = (email) =>
+  convert(emailFooterHtml(email), {
+    wordwrap: 130,
+  });
 
-export { isSubscribed, transporter, footerText, footerHtml };
+export { isSubscribed, transporter, emailFooterText, emailFooterHtml };

@@ -24,6 +24,7 @@
     "encoding": "^0.1.13",
     "formik": "^2.4.6",
     "fs-extra": "^11.2.0",
+    "html-to-text": "^9.0.5",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "mongoose": "^8.4.4",

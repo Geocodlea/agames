@@ -1,4 +1,5 @@
 import dbConnect from "/utils/dbConnect";
+import Email from "/models/Email";
 import { NextResponse } from "next/server";
 
 import mongoose from "mongoose";
@@ -10,9 +11,10 @@ import {
 import {
   isSubscribed,
   transporter,
-  footerText,
-  footerHtml,
+  emailFooterText,
+  emailFooterHtml,
 } from "/utils/emailHelpers";
+import { convert } from "html-to-text";
 
 export async function GET(request, { params }) {
   const [type, eventID, id] = params.type;
@@ -29,13 +31,13 @@ export async function GET(request, { params }) {
 
 export async function POST(request, { params }) {
   const [type, eventID] = params.type;
-  const session = await request.json();
+  const data = await request.json();
 
-  if (Object.keys(session).length === 0) {
+  if (!data.user) {
     return NextResponse.json({ success: false, message: "Nu ești logat" });
   }
 
-  if (!session.user.name) {
+  if (!data.user.name) {
     return NextResponse.json({
       success: false,
       message: "Numele este obligatoriu",
@@ -60,32 +62,33 @@ export async function POST(request, { params }) {
   }
 
   const registeredParticipant = await Participants.findOne({
-    id: session.user.id,
+    id: data.user.id,
   });
 
   if (registeredParticipant) {
     return NextResponse.json({ success: false, message: "Ești deja înscris" });
   }
 
-  const participant = new Participants(session.user);
+  const participant = new Participants(data.user);
   await participant.save();
 
-  if (await isSubscribed(session.user.email)) {
+  if (await isSubscribed(data.user.email)) {
+    const email = await Email.findOne({ name: "register" });
+    const emailSubject = email.subject.replace("{type}", data.typeName);
+    const emailHtml = email.body
+      .replace("{name}", data.user.name)
+      .replace("{type}", data.typeName);
+    const emailText = convert(emailHtml, {
+      wordwrap: 130,
+    });
+
     try {
       await transporter.sendMail({
         from: process.env.EMAIL_FROM,
-        to: session.user.email,
-        subject: `Înscriere Seara de ${type}`,
-        text: `Salutare ${
-          session.user.name
-        }, ne bucură înscrierea ta la Seara de ${type}. \r\n\r\n În cazul în care nu vei mai putea ajunge, te rugăm să ne anunți sau să îți anulezi înscrierea pe site: www.agames.ro \r\n\r\n Mulțumim, o zi frumoasă în continuare 😊 ${footerText(
-          session.user.email
-        )}`,
-        html: `<p>Salutare ${session.user.name},</p>
-               <p>Ne bucură înscrierea ta la Seara de ${type}.</p>
-               <p>În cazul în care nu vei mai putea ajunge, te rugăm să ne anunți sau să îți anulezi înscrierea pe site: <a href="http://www.agames.ro">www.agames.ro</a></p>
-               <p>Mulțumim, o zi frumoasă în continuare 😊</p>
-               <p>${footerHtml(session.user.email)}</p>`,
+        to: data.user.email,
+        subject: emailSubject,
+        text: emailText + "\n\n" + emailFooterText(data.user.email),
+        html: emailHtml + emailFooterHtml(data.user.email),
       });
 
       return NextResponse.json({ success: true });
