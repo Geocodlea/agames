@@ -4,6 +4,7 @@ import * as Participants from "@/models/Participants";
 import * as Verifications from "@/models/Verifications";
 import * as Matches from "@/models/Matches";
 import Event from "/models/Event";
+import Email from "/models/Email";
 
 import {
   isSubscribed,
@@ -11,6 +12,8 @@ import {
   emailFooterText,
   emailFooterHtml,
 } from "/utils/emailHelpers";
+import { convert } from "html-to-text";
+import { eventName } from "@/utils/helpers";
 
 import { createMatches } from "@/utils/createMatches";
 
@@ -143,14 +146,19 @@ export async function GET(request, { params }) {
     .filter((participant) => participant.email)
     .forEach(async (participant) => {
       if (await isSubscribed(participant.email)) {
+        const email = await Email.findOne({ name: "start" });
+        const emailSubject = email.subject.replace("{type}", eventName(type));
+        const emailHtml = email.body.replace("{round}", round);
+        const emailText = convert(emailHtml, {
+          wordwrap: 130,
+        });
+
         await transporter.sendMail({
           from: process.env.EMAIL_FROM,
           to: participant.email,
-          subject: `Concurs ${type}`,
-          text: `Start runda ${round} ${footerText(participant.email)}`,
-          html: `<h1>Start runda ${round}</h1> ${footerHtml(
-            participant.email
-          )}`,
+          subject: emailSubject,
+          text: emailText + "\n\n" + emailFooterText(participant.email),
+          html: emailHtml + emailFooterHtml(participant.email),
         });
       }
     });

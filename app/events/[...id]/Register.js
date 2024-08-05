@@ -8,16 +8,12 @@ import Link from "next/link";
 
 import { AddToCalendarButton } from "add-to-calendar-button-react";
 import AlertMsg from "@/components/AlertMsg";
-import { getEventDates } from "@/utils/helpers";
+import { getEventDates, eventName } from "@/utils/helpers";
 
 export default function Register({ session, type, eventID, eventDate }) {
   const [alert, setAlert] = useState({ text: "", severity: "" });
   const [loading, setLoading] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
-  const typeName =
-    type === "cavaleri"
-      ? "Catan - Orașe și Cavaleri"
-      : type.charAt(0).toUpperCase() + type.slice(1);
 
   useEffect(() => {
     const getIsRegistered = async () => {
@@ -39,7 +35,7 @@ export default function Register({ session, type, eventID, eventDate }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ user: session?.user, typeName }),
+        body: JSON.stringify({ user: session?.user }),
       });
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -96,18 +92,19 @@ export default function Register({ session, type, eventID, eventDate }) {
           {session ? (
             session?.user.name ? (
               <Typography variant="body1" gutterBottom>
-                Înscrie-te la Seara de {typeName}, folosind butonul de mai jos:
+                Înscrie-te la Seara de {eventName(type)}, folosind butonul de
+                mai jos:
               </Typography>
             ) : (
               <Typography variant="body1" gutterBottom>
-                Pentru a te înscrie la Seara de {typeName} trebuie să ai definit
-                un nume în secțiunea <Link href="/profile">profil</Link>
+                Pentru a te înscrie la Seara de {eventName(type)} trebuie să ai
+                definit un nume în secțiunea <Link href="/profile">profil</Link>
               </Typography>
             )
           ) : (
             <Typography variant="body1" gutterBottom>
-              Pentru a te înscrie la Seara de {typeName} trebuie ca mai întâi să
-              fii <Link href="/api/auth/signin">logat</Link>
+              Pentru a te înscrie la Seara de {eventName(type)} trebuie ca mai
+              întâi să fii <Link href="/api/auth/signin">logat</Link>
             </Typography>
           )}
           <LoadingButton

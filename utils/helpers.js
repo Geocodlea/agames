@@ -167,6 +167,12 @@ const getEventDates = (type, date, calendar) => {
   return formatedDate(closestEveryOtherEventDay);
 };
 
+// Formatted Event Names
+const eventName = (type) =>
+  type === "cavaleri"
+    ? "Catan - Orașe și Cavaleri"
+    : type.charAt(0).toUpperCase() + type.slice(1);
+
 export {
   FILE_SIZE,
   FILE_SIZE_TEXT,
@@ -176,4 +182,5 @@ export {
   gameName,
   oldEventsDate,
   getEventDates,
+  eventName,
 };

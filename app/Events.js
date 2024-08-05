@@ -12,7 +12,7 @@ import { Box, Paper, Typography, Button, Skeleton } from "@mui/material";
 import DeleteEvent from "./admin/DeleteEvent";
 import AlertMsg from "@/components/AlertMsg";
 
-import { getEventDates } from "@/utils/helpers";
+import { getEventDates, eventName } from "@/utils/helpers";
 
 const Events = () => {
   const [events, setEvents] = useState([]);
@@ -143,9 +143,7 @@ const Events = () => {
               {getEventDates(event.type, event.date)}
             </Typography>
             <Typography variant="overline" gutterBottom>
-              {event.type === "cavaleri"
-                ? "Catan - Orașe și Cavaleri"
-                : event.type}
+              {eventName(event.type)}
             </Typography>
 
             {isAdmin && (

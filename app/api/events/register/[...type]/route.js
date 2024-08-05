@@ -15,6 +15,7 @@ import {
   emailFooterHtml,
 } from "/utils/emailHelpers";
 import { convert } from "html-to-text";
+import { eventName } from "@/utils/helpers";
 
 export async function GET(request, { params }) {
   const [type, eventID, id] = params.type;
@@ -74,10 +75,10 @@ export async function POST(request, { params }) {
 
   if (await isSubscribed(data.user.email)) {
     const email = await Email.findOne({ name: "register" });
-    const emailSubject = email.subject.replace("{type}", data.typeName);
+    const emailSubject = email.subject.replace("{type}", eventName(type));
     const emailHtml = email.body
       .replace("{name}", data.user.name)
-      .replace("{type}", data.typeName);
+      .replace("{type}", eventName(type));
     const emailText = convert(emailHtml, {
       wordwrap: 130,
     });
