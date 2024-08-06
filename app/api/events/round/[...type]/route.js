@@ -33,8 +33,9 @@ export async function GET(request, { params }) {
   const VerificationsType = Verifications[`Verificari_live_${type}`];
   const verification = await VerificationsType.findOne({
     round: { $exists: true },
-  }).select("round");
+  }).select("round isPublished");
   let round = verification.round;
+  const isPublished = verification.isPublished;
 
   const isFinalRound =
     type === "catan"
@@ -57,20 +58,23 @@ export async function GET(request, { params }) {
   const allScoresSubmitted = roundScores === 0;
 
   if (!allScoresSubmitted) {
-    return NextResponse.json({ round, isFinalRound });
+    return NextResponse.json({ round, isFinalRound, isPublished });
   }
 
   if (isFinalRound) {
     await VerificationsType.updateOne(
-      { stop: true },
-      { stop: false, timer: null }
+      { isStarted: true },
+      { isStarted: false, timer: null }
     );
-    return NextResponse.json({ round, isFinalRound });
+    return NextResponse.json({ round, isFinalRound, isPublished });
   }
 
   // All scores submitted, start the next round
   round++;
-  await VerificationsType.updateOne({ stop: true }, { round, timer: null });
+  await VerificationsType.updateOne(
+    { isStarted: true },
+    { round, timer: null, isPublished: false }
+  );
 
   MatchesType = Matches[`Meciuri_live_${type}_${round}`];
   const ParticipantType = Participants[`Participanti_live_${type}`];
@@ -163,5 +167,5 @@ export async function GET(request, { params }) {
       }
     });
 
-  return NextResponse.json({ round, isFinalRound });
+  return NextResponse.json({ round, isFinalRound, isPublished });
 }

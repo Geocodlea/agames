@@ -44,7 +44,7 @@ export async function POST(request, { params }) {
 
   await VerificationsType.updateOne(
     { round: 0 },
-    { stop: true },
+    { isStarted: true },
     { upsert: true }
   );
   const participants = await ParticipantType.find();

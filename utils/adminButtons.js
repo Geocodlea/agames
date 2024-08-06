@@ -96,6 +96,19 @@ const StartButtons = ({ type, loading, round, start, timer }) => {
   }
 };
 
+const PublishButton = ({ round, publish }) =>
+  round !== 0 && (
+    <div>
+      <Typography align="center" gutterBottom>
+        Publică meciuri
+      </Typography>
+
+      <Button variant="contained" className="btn btn-primary" onClick={publish}>
+        Publish
+      </Button>
+    </div>
+  );
+
 const ResetButton = ({ loading, isFinalRound, reset }) =>
   isFinalRound && (
     <div>
@@ -116,4 +129,4 @@ const ResetButton = ({ loading, isFinalRound, reset }) =>
     </div>
   );
 
-export { StartButtons, ResetButton };
+export { StartButtons, PublishButton, ResetButton };

@@ -30,6 +30,7 @@ export default function EventPage({ params }) {
   const [alert, setAlert] = useState({ text: "", severity: "" });
   const [loading, setLoading] = useState(true);
   const [isPersonalMatch, setIsPersonalMatch] = useState(true);
+  const [isPublished, setIsPublished] = useState(false);
   const isAdmin = session?.user.role === "admin";
   const router = useRouter();
 
@@ -46,6 +47,7 @@ export default function EventPage({ params }) {
 
       setRound(data.round);
       setIsFinalRound(data.isFinalRound);
+      setIsPublished(data.isPublished);
       data.round === 0 ? setEventStarted(false) : setEventStarted(true);
     };
 
@@ -154,7 +156,7 @@ export default function EventPage({ params }) {
   const updatePersonalMatch = (result) => {
     setIsPersonalMatch(result);
   };
-  if (eventStarted && isPersonalMatch) {
+  if (eventStarted && isPersonalMatch && isPublished) {
     tabs.push({
       label: "Meci Propriu",
       content: (
@@ -171,21 +173,22 @@ export default function EventPage({ params }) {
     });
   }
 
+  if (eventStarted && (isAdmin || isPublished)) {
+    tabs.push({
+      label: "Meciuri",
+      content: (
+        <Matches
+          type={type}
+          round={round}
+          host={session?.user.name}
+          isAdmin={isAdmin}
+        />
+      ),
+    });
+  }
+
   if (eventStarted) {
-    tabs.push(
-      {
-        label: "Meciuri",
-        content: (
-          <Matches
-            type={type}
-            round={round}
-            host={session?.user.name}
-            isAdmin={isAdmin}
-          />
-        ),
-      },
-      { label: "Clasament", content: <Ranking type={type} /> }
-    );
+    tabs.push({ label: "Clasament", content: <Ranking type={type} /> });
   }
 
   if (isAdmin && type !== "general") {

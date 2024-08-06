@@ -142,7 +142,7 @@ export async function DELETE(request, { params }) {
   await VerificationsType.deleteMany({ round: { $exists: false } });
   await VerificationsType.updateOne(
     { round: { $exists: true } },
-    { round: 0, stop: false }
+    { round: 0, isStarted: false, isPublished: false }
   );
 
   return NextResponse.json({ success: true });

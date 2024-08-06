@@ -16,8 +16,8 @@ export async function GET(request, { params }) {
   // For Whist Ranking
   const verification = await VerificationsType.findOne({
     round: { $exists: true },
-  }).select("stop");
-  const isFinished = !verification.stop;
+  }).select("isStarted");
+  const isFinished = !verification.isStarted;
 
   const clasament = await ClasamentType.aggregate(sortOrder(type, isFinished));
 

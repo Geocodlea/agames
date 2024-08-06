@@ -19,7 +19,7 @@ export async function POST(request, { params }) {
   const VerificationsType = Verifications[`Verificari_live_${type}`];
 
   await dbConnect();
-  await VerificationsType.updateOne({ stop: true }, { timer });
+  await VerificationsType.updateOne({ isStarted: true }, { timer });
 
   return NextResponse.json({ success: true });
 }

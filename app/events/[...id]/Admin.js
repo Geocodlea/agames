@@ -8,7 +8,7 @@ import styles from "@/app/page.module.css";
 import { Box } from "@mui/material";
 
 import AlertMsg from "@/components/AlertMsg";
-import { StartButtons, ResetButton } from "@/utils/adminButtons";
+import { StartButtons, PublishButton, ResetButton } from "@/utils/adminButtons";
 
 export default function Admin({ type, round, isFinalRound, eventID }) {
   const [alert, setAlert] = useState({ text: "", severity: "" });
@@ -43,6 +43,32 @@ export default function Admin({ type, round, isFinalRound, eventID }) {
       });
     } catch (error) {
       setLoadingStart(false);
+      setAlert({ text: `${error}`, severity: "error" });
+    }
+  };
+
+  const publish = async () => {
+    try {
+      const response = await fetch(`/api/events/publish/${type}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.success === false) {
+        throw new Error(data.message);
+      }
+
+      setAlert({
+        text: `Meciuri publicate cu succes`,
+        severity: "success",
+      });
+    } catch (error) {
       setAlert({ text: `${error}`, severity: "error" });
     }
   };
@@ -120,6 +146,7 @@ export default function Admin({ type, round, isFinalRound, eventID }) {
         start={start}
         timer={timer}
       />
+      <PublishButton round={round} publish={publish} />
       <ResetButton
         loading={loadingReset}
         isFinalRound={isFinalRound}

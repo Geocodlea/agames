@@ -93,7 +93,7 @@ export async function PUT(request, { params }) {
   await dbConnect();
 
   if (isAdmin !== "true") {
-    const eventFinished = await VerificationsType.findOne({ stop: false });
+    const eventFinished = await VerificationsType.findOne({ isStarted: false });
     if (eventFinished) {
       return NextResponse.json({
         success: false,
