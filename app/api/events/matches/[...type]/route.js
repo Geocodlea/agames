@@ -74,17 +74,10 @@ export async function PUT(request, { params }) {
 
   const matchRound = isNaN(targetRound) ? round : targetRound;
 
-  if (typeof data.score !== "number") {
-    return NextResponse.json({
-      success: false,
-      message: "Scorul trebuie să fie un număr",
-    });
-  }
-
   // Only for Whist
   const licitari = data.licitari;
 
-  const score = Number(data.score);
+  const score = typeof data.score !== "number" ? null : Number(data.score);
   const ParticipantType = Participants[`Participanti_live_${type}`];
   const MatchesType = Matches[`Meciuri_live_${type}_${matchRound}`];
   const VerificationsType = Verifications[`Verificari_live_${type}`];
