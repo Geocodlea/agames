@@ -32,6 +32,8 @@ const LeaderboardTable = async () => {
       field: "points",
       headerName: "Puncte",
       width: 100,
+      align: "center",
+      headerAlign: "center",
     },
   ];
 

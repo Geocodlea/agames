@@ -12,26 +12,48 @@ import EditableDataGrid from "@/components/EditableDataGrid";
 
 import dbConnect from "/utils/dbConnect";
 import OldEvents from "@/models/OldEvents";
-import { gameName } from "@/utils/helpers";
+import { LEADERBOARD_POINTS, gameName } from "@/utils/helpers";
 
 export default async function Profile() {
   const session = await getServerSession(authOptions);
+  let total = 0;
 
   if (!session) redirect(`/`);
 
   await dbConnect();
-  const participations = await OldEvents.find({
-    data: {
-      $elemMatch: {
-        nume: session.user.name,
+  const events = await OldEvents.aggregate([
+    // Match documents where the `nume` field in `data` array matches the user name
+    {
+      $match: {
+        "data.nume": session.user.name,
       },
     },
-  }).select("name");
+    // Project the index of the matched element
+    {
+      $project: {
+        name: 1, // Include the `data` array in the output
+        rankingPosition: {
+          $indexOfArray: [
+            "$data.nume", // Array to search
+            session.user.name, // Value to find the index of
+          ],
+        },
+      },
+    },
+  ]);
 
-  const filteredParticipations = participations.map((event) => ({
-    name: gameName(event),
-    link: `/oldevents/${event.name}`,
-  }));
+  const filteredEvents = events.map((event) => {
+    const isCurrentYear = event.name.includes("2024");
+    if (isCurrentYear) {
+      total += LEADERBOARD_POINTS[event.rankingPosition];
+    }
+
+    return {
+      name: gameName(event),
+      link: `/oldevents/${event.name}`,
+      leaderboard: isCurrentYear ? total : null,
+    };
+  });
 
   const columnsData = [
     {
@@ -42,13 +64,22 @@ export default async function Profile() {
     {
       field: "name",
       headerName: "Nume Joc",
-      minWidth: 250,
+      minWidth: 200,
       flex: 1,
     },
     {
       field: "link",
       headerName: "Clasament",
-      width: 150,
+      width: 120,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "leaderboard",
+      headerName: "Leaderboard",
+      width: 120,
+      align: "center",
+      headerAlign: "center",
     },
   ];
 
@@ -75,9 +106,10 @@ export default async function Profile() {
           <Typography variant="h2">Istoric Participări</Typography>
           <EditableDataGrid
             columnsData={columnsData}
-            rowsData={filteredParticipations}
+            rowsData={filteredEvents}
             pageSize={10}
             density={"compact"}
+            disableColumnMenu={true}
           />
         </div>
 

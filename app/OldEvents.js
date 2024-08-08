@@ -69,7 +69,7 @@ const OldEventsTable = () => {
     {
       field: "link",
       headerName: "Clasament",
-      width: 150,
+      width: 130,
     },
   ];
 

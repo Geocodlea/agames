@@ -9,6 +9,7 @@ const SUPPORTED_FORMATS = [
 ];
 const SUPPORTED_FORMATS_TEXT =
   "Unsupported file type, accepted formats: jpg, jpeg, gif, png, webp";
+const LEADERBOARD_POINTS = [100, 70, 50, 35, 25];
 
 const sortOrder = (type, isFinished) => {
   if (type === "whist") {
@@ -178,6 +179,7 @@ export {
   FILE_SIZE_TEXT,
   SUPPORTED_FORMATS,
   SUPPORTED_FORMATS_TEXT,
+  LEADERBOARD_POINTS,
   sortOrder,
   gameName,
   oldEventsDate,

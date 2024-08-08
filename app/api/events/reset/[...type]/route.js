@@ -7,7 +7,7 @@ import * as Clasament from "@/models/Clasament";
 import OldEvents from "@/models/OldEvents";
 import Leaderboard from "@/models/Leaderboard";
 
-import { sortOrder, oldEventsDate } from "@/utils/helpers";
+import { LEADERBOARD_POINTS, sortOrder, oldEventsDate } from "@/utils/helpers";
 
 import { Storage } from "@google-cloud/storage";
 
@@ -69,7 +69,6 @@ export async function DELETE(request, { params }) {
     );
 
     // Update Leaderboard
-    const leaderboardPoints = [100, 70, 50, 35, 25];
     participants.forEach(async (participant, i) => {
       const id = participant.id;
       const leaderboardParticipant = await Leaderboard.findOne({
@@ -80,14 +79,14 @@ export async function DELETE(request, { params }) {
         await Leaderboard.updateOne(
           { id },
           {
-            puncte: leaderboardParticipant.puncte + leaderboardPoints[i] || 0,
+            puncte: leaderboardParticipant.puncte + LEADERBOARD_POINTS[i] || 0,
           }
         );
       } else {
         await Leaderboard.create({
           id,
           nume: participant.name,
-          puncte: leaderboardPoints[i] || 0,
+          puncte: LEADERBOARD_POINTS[i] || 0,
         });
       }
     });
