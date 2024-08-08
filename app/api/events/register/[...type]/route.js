@@ -38,10 +38,10 @@ export async function POST(request, { params }) {
     return NextResponse.json({ success: false, message: "Nu ești logat" });
   }
 
-  if (!data.user.name) {
+  if (!data.user.name || !data.user.tel) {
     return NextResponse.json({
       success: false,
-      message: "Numele este obligatoriu",
+      message: "Numele și Telefonul sunt obligatorii",
     });
   }
 

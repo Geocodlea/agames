@@ -90,15 +90,16 @@ export default function Register({ session, type, eventID, eventDate }) {
       {!isRegistered ? (
         <div>
           {session ? (
-            session?.user.name ? (
+            session?.user.name && session?.user.tel ? (
               <Typography variant="body1" gutterBottom>
                 Înscrie-te la Seara de {eventName(type)}, folosind butonul de
                 mai jos:
               </Typography>
             ) : (
               <Typography variant="body1" gutterBottom>
-                Pentru a te înscrie la Seara de {eventName(type)} trebuie să ai
-                definit un nume în secțiunea <Link href="/profile">profil</Link>
+                Pentru a te înscrie la Seara de {eventName(type)}, trebuie să ai
+                completat numele și numărul de telefon în{" "}
+                <Link href="/profile">profil</Link>
               </Typography>
             )
           ) : (
