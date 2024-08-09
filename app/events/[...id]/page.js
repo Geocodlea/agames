@@ -20,6 +20,18 @@ import Matches from "./Matches";
 import Ranking from "./Ranking";
 import Loading from "./loading";
 
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import InfoIcon from "@mui/icons-material/Info";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+import GroupsIcon from "@mui/icons-material/Groups";
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import ScoreboardIcon from "@mui/icons-material/Scoreboard";
+import LeaderboardIcon from "@mui/icons-material/Leaderboard";
+import ShieldIcon from "@mui/icons-material/Shield";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
+
 export default function EventPage({ params }) {
   const [type, id] = params.id;
   const { data: session } = useSession();
@@ -33,6 +45,8 @@ export default function EventPage({ params }) {
   const [isPublished, setIsPublished] = useState(false);
   const isAdmin = session?.user.role === "admin";
   const router = useRouter();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
     const getRound = async () => {
@@ -109,22 +123,22 @@ export default function EventPage({ params }) {
 
   const tabs = [
     {
-      label: "Detalii",
+      label: isSmallScreen ? <AssignmentIcon /> : "Detalii",
       content: editorContent(event, "detalii"),
     },
     {
-      label: "Premii",
+      label: isSmallScreen ? <EmojiEventsIcon /> : "Premii",
       content: editorContent(event, "premii"),
     },
     {
-      label: "Regulament",
+      label: isSmallScreen ? <InfoIcon /> : "Regulament",
       content: editorContent(event, "regulament"),
     },
   ];
 
   if (!eventStarted) {
     tabs.push({
-      label: "Inscriere",
+      label: isSmallScreen ? <EventNoteIcon /> : "Inscriere",
       content: (
         <Register
           session={session}
@@ -138,7 +152,7 @@ export default function EventPage({ params }) {
 
   if (isAdmin || eventStarted) {
     tabs.push({
-      label: "Participanti",
+      label: isSmallScreen ? <GroupsIcon /> : "Participanti",
       content: (
         <Stack spacing={4}>
           <Participants
@@ -158,7 +172,7 @@ export default function EventPage({ params }) {
   };
   if (eventStarted && isPersonalMatch && isPublished) {
     tabs.push({
-      label: "Meci Propriu",
+      label: isSmallScreen ? <AssignmentIndIcon /> : "Meci Propriu",
       content: (
         <PersonalMatch
           type={type}
@@ -175,7 +189,7 @@ export default function EventPage({ params }) {
 
   if (eventStarted && (isAdmin || isPublished)) {
     tabs.push({
-      label: "Meciuri",
+      label: isSmallScreen ? <ScoreboardIcon /> : "Meciuri",
       content: (
         <Matches
           type={type}
@@ -188,12 +202,15 @@ export default function EventPage({ params }) {
   }
 
   if (eventStarted) {
-    tabs.push({ label: "Clasament", content: <Ranking type={type} /> });
+    tabs.push({
+      label: isSmallScreen ? <LeaderboardIcon /> : "Clasament",
+      content: <Ranking type={type} />,
+    });
   }
 
   if (isAdmin && type !== "general") {
     tabs.push({
-      label: "Admin",
+      label: isSmallScreen ? <ShieldIcon /> : "Admin",
       content: (
         <Admin
           type={type}

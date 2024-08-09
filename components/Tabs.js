@@ -54,9 +54,7 @@ export default function CustomTabs({ tabContents, round }) {
       <Tabs
         value={value}
         onChange={handleChange}
-        variant="scrollable"
-        scrollButtons
-        allowScrollButtonsMobile
+        variant="fullWidth"
         aria-label="event tabs"
         sx={{
           borderBottom: 1,
@@ -64,7 +62,14 @@ export default function CustomTabs({ tabContents, round }) {
         }}
       >
         {tabContents.map((tab, i) => (
-          <Tab label={tab.label} {...tabsProps(i)} key={i} />
+          <Tab
+            label={tab.label}
+            {...tabsProps(i)}
+            sx={{
+              minWidth: 10,
+            }}
+            key={i}
+          />
         ))}
       </Tabs>
 
