@@ -72,7 +72,7 @@ function Banner({ children }) {
         sx={{
           position: "absolute",
           width: "100%",
-          height: "50vh",
+          height: "30vh",
           zIndex: -1,
         }}
       >
